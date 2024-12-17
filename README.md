@@ -2,16 +2,12 @@
 
 **LitePay** is a lightweight Litecoin payment processor that allows developers to seamlessly integrate Litecoin payments into their applications. Built with a **Golang backend** and a **SvelteKit frontend**, LitePay offers a fast, modern, and easy-to-deploy solution. The frontend is embedded into the backend for simplicity.
 
----
-
 ## 📋 Features
 
 - **Backend**: Built with **Golang**, leveraging the Litecoin JSON-RPC API for blockchain interactions.
 - **Frontend**: Developed using **SvelteKit** for fast, responsive UI.
 - **Single Binary Deployment**: The SvelteKit frontend is embedded into the Golang backend for simplicity—no need for separate servers.
 - **Integration with Litecoin Node**: Requires hosting a Litecoin node with RPC enabled.
-
----
 
 ## 🚀 Prerequisites
 
@@ -23,8 +19,6 @@ To run **LitePay**, you need the following:
     - Enable RPC by configuring your `litecoin.conf` file.
 3. **Node.js** (only required to build the frontend):
     - [Download Node.js](https://nodejs.org/).
-
----
 
 ## ⚙️ Setting Up Litecoin Node
 
@@ -46,12 +40,9 @@ Start your Litecoin node with the following command:
 litecoind -daemon
 ```
 
---- 
 ## 🛠 Installation
 
 SOON...
-
----
 
 ## ⚠️ Disclaimer
 
