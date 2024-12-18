@@ -66,7 +66,7 @@
 				</div>
 				<div class="mt-4">
 					<h3 class="text-2xl font-extrabold">
-						Send {$paymentDataQuery.data.amount_crypto.toFixed(8)}
+						Send {$paymentDataQuery.data.amount_crypto}
 						{$paymentDataQuery.data.currency_crypto_symbol}
 					</h3>
 					<p class="text-sm text-muted-foreground">
@@ -92,8 +92,10 @@
 							href={`https://blockchair.com/${$paymentDataQuery.data.currency_crypto_name.toLocaleLowerCase()}/transaction/${$paymentDataQuery.data.last_transaction_hash}`}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="text-xs text-muted-foreground">View transaction on Blockchair</a
+							class="text-xs text-muted-foreground hover:underline"
 						>
+							View transaction details
+						</a>
 					{/if}
 				</div>
 				<Card.Root class="mt-8 border border-border bg-border/75 md:mx-4">
@@ -114,7 +116,7 @@
 									: "Waiting..."}
 							</p>
 						</div>
-					</Card.Content>
+					</Card.Content>	
 				</Card.Root>
 			{:else if $paymentDataQuery.data.status === "PAID"}
 				<!-- Paid -->

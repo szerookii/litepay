@@ -8,8 +8,11 @@
 	const { children } = $props();
 </script>
 
-<ModeWatcher defaultMode={"dark"} />
+<svelte:head>
+	<meta name="darkreader-lock">
+</svelte:head>
 
+<ModeWatcher defaultMode={"dark"} />
 <QueryClientProvider client={queryClient}>
 	<main class="min-h-screen scroll-smooth">
 		{@render children()}
