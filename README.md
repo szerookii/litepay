@@ -1,6 +1,9 @@
 # LitePay
 
-**LitePay** is a lightweight Litecoin payment processor that allows developers to seamlessly integrate Litecoin payments into their applications. Built with a **Golang backend** and a **SvelteKit frontend**, LitePay offers a fast, modern, and easy-to-deploy solution. The frontend is embedded into the backend for simplicity.
+**LitePay** is a selfhosted lightweight Litecoin payment processor that allows developers to seamlessly integrate Litecoin payments into their applications. Built with a **Golang backend** and a **SvelteKit frontend**, LitePay offers a fast, modern, and easy-to-deploy solution. The frontend is embedded into the backend for simplicity.
+
+## Why?
+I know that there is BtcPayServer and many others, but I wanted to create a simple and lightweight solution for Litecoin. I also wanted to learn more about cryptocurrencies and blockchain technology, so it was a great opportunity to do so.
 
 ## 📋 Features
 
