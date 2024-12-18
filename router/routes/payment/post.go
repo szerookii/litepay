@@ -72,8 +72,8 @@ func Post(ctx fiber.Ctx) error {
 	}
 
 	if !walletLoaded {
+		log.Info().Msgf("wallet %s not found, loading...", os.Getenv("WALLET_NAME"))
 		if err := c.LoadWallet(os.Getenv("WALLET_NAME")); err != nil {
-			log.Error().Err(err).Msg("failed to load wallet")
 			return fmt.Errorf("failed to load wallet")
 		}
 	}
@@ -84,8 +84,6 @@ func Post(ctx fiber.Ctx) error {
 	if err != nil {
 		return fmt.Errorf("failed to get new address")
 	}
-
-	log.Debug().Msgf("New address: %s", address)
 
 	payment, err := db.CreatePayment(address, cryptoAmount, c.Symbol(), req.Amount, req.Currency, time.Now().Add(time.Hour))
 	if err != nil {
