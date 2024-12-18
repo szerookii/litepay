@@ -10,4 +10,5 @@ export interface Payment {
   expires_at: string;
   last_transaction_hash?: string | null;
   confirmations?: number | null;
+  required_confirmations: number;
 }

@@ -70,15 +70,16 @@ func Get(ctx fiber.Ctx) error {
 	}
 
 	response := &GetPaymentResponse{
-		Id:                   payment.ID,
-		WalletAddress:        payment.WalletAddress,
-		AmountCrypto:         payment.AmountCrypto,
-		CurrencyCryptoName:   c.Name(),
-		CurrencyCryptoSymbol: c.Symbol(),
-		AmountFiat:           payment.AmountFiat,
-		CurrencyFiat:         payment.CurrencyFiat,
-		Status:               payment.Status,
-		ExpiresAt:            payment.ExpiresAt,
+		Id:                    payment.ID,
+		WalletAddress:         payment.WalletAddress,
+		AmountCrypto:          payment.AmountCrypto,
+		CurrencyCryptoName:    c.Name(),
+		CurrencyCryptoSymbol:  c.Symbol(),
+		AmountFiat:            payment.AmountFiat,
+		CurrencyFiat:          payment.CurrencyFiat,
+		Status:                payment.Status,
+		ExpiresAt:             payment.ExpiresAt,
+		RequiredConfirmations: c.RequiredConfirmations(),
 	}
 
 	if len(transactions) >= 1 {
@@ -109,8 +110,6 @@ func Get(ctx fiber.Ctx) error {
 		}
 
 		response.LastTransactionHash = transactions[0].Txid
-	} else {
-		response.Confirmations = utils.Ptr(0)
 	}
 
 	return utils.SendJSON(ctx, fiber.StatusOK, response)

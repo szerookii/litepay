@@ -110,7 +110,7 @@
 							</p>
 							<p class="text-sm font-medium text-white">
 								{$paymentDataQuery.data.confirmations !== null
-									? $paymentDataQuery.data.confirmations
+									? `${$paymentDataQuery.data.confirmations} / ${$paymentDataQuery.data.required_confirmations}`
 									: "Waiting..."}
 							</p>
 						</div>
