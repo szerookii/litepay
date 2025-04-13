@@ -7,6 +7,7 @@ import (
 	"github.com/bytedance/sonic"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -23,7 +24,8 @@ type RPCRequest struct {
 	Params  any    `json:"params"`
 }
 
-func CallRPC[T any](version, method string, params any) (*RPCResult[T], error) {
+func CallRPC[T any](version, symbol, method string, params any) (*RPCResult[T], error) {
+	symbol = strings.ToUpper(symbol)
 	client := http.Client{Timeout: 5 * time.Second}
 
 	request := &RPCRequest{
@@ -38,13 +40,13 @@ func CallRPC[T any](version, method string, params any) (*RPCResult[T], error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", os.Getenv("LTC_RPC_HOST"), buffer)
+	req, err := http.NewRequest("POST", os.Getenv(fmt.Sprintf("%s_RPC_HOST", symbol)), buffer)
 	if err != nil {
 		return nil, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv("LTC_RPC_USER"), os.Getenv("LTC_RPC_PASSWORD"))))))
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", os.Getenv(fmt.Sprintf("%s_RPC_USER", symbol)), os.Getenv(fmt.Sprintf("%s_RPC_PASSWORD", symbol)))))))
 
 	resp, err := client.Do(req)
 	if err != nil {

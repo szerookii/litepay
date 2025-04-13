@@ -109,7 +109,7 @@ func Get(ctx fiber.Ctx) error {
 			response.Confirmations = utils.Ptr(averageConfirmations)
 		}
 
-		response.LastTransactionHash = transactions[0].Txid
+		response.LastTransactionHash = transactions[len(transactions)-1].Txid
 	}
 
 	return utils.SendJSON(ctx, fiber.StatusOK, response)

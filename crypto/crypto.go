@@ -1,10 +1,15 @@
 package crypto
 
 import (
-	"github.com/szerookii/litepay/crypto/jsonrpc"
-	"github.com/szerookii/litepay/crypto/litecoin"
+	"fmt"
+	"os"
 	"strings"
 	"sync"
+
+	"github.com/phuslu/log"
+	"github.com/szerookii/litepay/crypto/bitcoincash"
+	"github.com/szerookii/litepay/crypto/jsonrpc"
+	"github.com/szerookii/litepay/crypto/litecoin"
 )
 
 type Blockchain interface {
@@ -13,11 +18,11 @@ type Blockchain interface {
 	Symbol() string
 	Info() (*jsonrpc.BlockchainInfo, error)
 	Price(string) (float64, error)
+	EstimateFees() (float64, error)
 	ListWallets() ([]string, error)
 	CreateWallet(string) error
 	LoadWallet(string) error
 	GetNewAddress(string) (string, error)
-	GetAddressLabel(string) (string, error)
 	ListUnspent(string) ([]*jsonrpc.Transaction, error)
 }
 
@@ -26,8 +31,39 @@ var (
 	mutex   = new(sync.RWMutex)
 )
 
-func init() {
-	cryptos["litecoin"] = new(litecoin.Litecoin)
+func Init() {
+	Add(new(litecoin.Litecoin))
+	Add(new(bitcoincash.BitcoinCash))
+}
+
+func Add(crypto Blockchain) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	if os.Getenv(fmt.Sprintf("%s_RPC_HOST", crypto.Symbol())) == "" {
+		log.Info().Msgf("missing %s_RPC_HOST environment variable, ignoring %s", crypto.Symbol(), crypto.Name())
+		return
+	}
+
+	if os.Getenv(fmt.Sprintf("%s_RPC_USER", crypto.Symbol())) == "" {
+		log.Info().Msgf("missing %s_RPC_USER environment variable, ignoring %s", crypto.Symbol(), crypto.Name())
+		return
+	}
+
+	if os.Getenv(fmt.Sprintf("%s_RPC_PASSWORD", crypto.Symbol())) == "" {
+		log.Info().Msgf("missing %s_RPC_PASSWORD environment variable, ignoring %s", crypto.Symbol(), crypto.Name())
+		return
+	}
+
+	_, err := crypto.Info()
+	if err != nil {
+		log.Error().Err(err).Msgf("failed to get blockchain info for %s", crypto.Name())
+		return
+	}
+
+	cryptos[crypto.Name()] = crypto
+
+	log.Info().Msgf("Enabled support for %s.", crypto.Name())
 }
 
 func Get(name string) Blockchain {

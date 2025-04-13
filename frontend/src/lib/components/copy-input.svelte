@@ -27,7 +27,7 @@
 		}}
 	>
 		{#if copied}
-			<CopyCheck  />
+			<CopyCheck />
 		{:else}
 			<Copy />
 		{/if}

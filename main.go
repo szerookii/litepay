@@ -1,9 +1,14 @@
+//go:build go
+// +build go
+
+//go:generate go run embed_frontend.go
 package main
 
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
+	"github.com/szerookii/litepay/crypto"
 	"github.com/szerookii/litepay/db"
 	"github.com/szerookii/litepay/router"
 	"os"
@@ -19,7 +24,7 @@ func main() {
 	if log.IsTerminal(os.Stderr.Fd()) {
 		log.DefaultLogger = log.Logger{
 			TimeFormat: "15:04:05",
-			Caller:     1,
+			Caller:     0,
 			Writer: &log.ConsoleWriter{
 				ColorOutput:    true,
 				QuoteString:    true,
@@ -31,6 +36,7 @@ func main() {
 	log.Info().Msg("Starting LitePay...")
 
 	r := router.Init()
+	crypto.Init()
 
 	go r.Listen(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")), fiber.ListenConfig{
 		DisableStartupMessage: true,

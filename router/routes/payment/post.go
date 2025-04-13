@@ -46,20 +46,24 @@ func Post(ctx fiber.Ctx) error {
 
 	info, err := c.Info()
 	if err != nil {
+		log.Error().Err(err).Msg("failed to get blockchain info")
 		return fmt.Errorf("failed to get blockchain info")
 	}
 
 	if info.VerificationProgress < 0.95 {
+		log.Error().Msg("blockchain is not fully synced")
 		return fmt.Errorf("blockchain is not fully synced")
 	}
 
 	exchangeRate, err := c.Price(req.Currency)
 	if err != nil {
+		log.Error().Err(err).Msgf("failed to get price in %s", req.Currency)
 		return fmt.Errorf("failed to get price in %s", req.Currency)
 	}
 
 	wallets, err := c.ListWallets()
 	if err != nil {
+		log.Error().Err(err).Msg("failed to list wallets")
 		return fmt.Errorf("failed to list wallets")
 	}
 
@@ -78,13 +82,19 @@ func Post(ctx fiber.Ctx) error {
 		}
 	}
 
-	cryptoAmount := req.Amount / exchangeRate
+	fees, err := c.EstimateFees()
+	if err != nil {
+		log.Info().Msg("failed to estimate fees, not using fees")
+	}
+
+	cryptoAmount := (req.Amount / exchangeRate) + fees
 
 	address, err := c.GetNewAddress("")
 	if err != nil {
 		return fmt.Errorf("failed to get new address")
 	}
 
+	log.Debug().Msgf("address=%s, amount=%f %s, exchange_rate=%f %s, fees=%f %s, crypto_amount=%f %s", address, req.Amount, req.Currency, exchangeRate, req.Currency, fees, req.Currency, cryptoAmount, c.Symbol())
 	payment, err := db.CreatePayment(address, cryptoAmount, c.Symbol(), req.Amount, req.Currency, time.Now().Add(time.Hour))
 	if err != nil {
 		return fmt.Errorf("failed to create payment")

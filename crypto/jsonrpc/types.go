@@ -14,12 +14,4 @@ type Transaction struct {
 	Txid          string  `json:"txid"`
 	Amount        float64 `json:"amount"`
 	Confirmations int     `json:"confirmations"`
-	Spendable     bool    `json:"spendable"`
-	Address       string  `json:"address"`
-	Label         string  `json:"label"`
-	Vout          int     `json:"vout"`
-	ScriptPubKey  string  `json:"scriptPubKey"`
-	Solvable      bool    `json:"solvable"`
-	Desc          string  `json:"desc"`
-	Safe          bool    `json:"safe"`
 }

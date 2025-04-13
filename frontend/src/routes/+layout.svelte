@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<meta name="darkreader-lock">
+	<meta name="darkreader-lock" />
 </svelte:head>
 
 <ModeWatcher defaultMode={"dark"} />
