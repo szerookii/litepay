@@ -3,7 +3,7 @@ package payment
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v3"
-	"github.com/szerookii/litepay/crypto"
+	"github.com/szerookii/litepay/cryptocurrency"
 	"github.com/szerookii/litepay/db"
 	prisma "github.com/szerookii/litepay/prisma/db"
 	"github.com/szerookii/litepay/utils"
@@ -59,12 +59,12 @@ func Get(ctx fiber.Ctx) error {
 		})
 	}
 
-	c := crypto.GetBySymbol(payment.CurrencyCrypto)
+	c := cryptocurrency.GetBySymbol(payment.CurrencyCrypto)
 	if c == nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	transactions, err := c.ListUnspent(payment.WalletAddress)
+	transactions, err := c.RecentTransactions(payment.WalletAddress)
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -88,15 +88,10 @@ func Get(ctx fiber.Ctx) error {
 		var totalConfirmations int
 
 		for _, transaction := range transactions {
-			if transaction.Confirmations >= c.RequiredConfirmations() {
-				totalConfirmedAmount += transaction.Amount
-			}
-
 			amountWaiting += transaction.Amount
 			totalConfirmations += transaction.Confirmations
 		}
 
-		// check if amount is paid
 		if totalConfirmedAmount >= payment.AmountCrypto {
 			_, err := db.UpdatePayment(payment.ID, prisma.PaymentStatusPaid)
 			if err != nil {

@@ -1,14 +1,10 @@
-//go:build go
-// +build go
-
-//go:generate go run embed_frontend.go
 package main
 
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
-	"github.com/szerookii/litepay/crypto"
+	"github.com/szerookii/litepay/cryptocurrency"
 	"github.com/szerookii/litepay/db"
 	"github.com/szerookii/litepay/router"
 	"os"
@@ -36,9 +32,10 @@ func main() {
 	log.Info().Msg("Starting LitePay...")
 
 	r := router.Init()
-	crypto.Init()
+	cryptocurrency.Init()
 
-	go r.Listen(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")), fiber.ListenConfig{
+	go r.Listen(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT")), fiber.ListenConfig{
+		ListenerNetwork:       "tcp",
 		DisableStartupMessage: true,
 	})
 

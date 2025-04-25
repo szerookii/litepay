@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v3"
 	"github.com/phuslu/log"
-	"github.com/szerookii/litepay/crypto"
+	"github.com/szerookii/litepay/cryptocurrency"
 	"github.com/szerookii/litepay/db"
 	prisma "github.com/szerookii/litepay/prisma/db"
 	"github.com/szerookii/litepay/utils"
-	"os"
 	"time"
 )
 
@@ -39,47 +38,19 @@ func Post(ctx fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusBadRequest)
 	}
 
-	c := crypto.GetBySymbol(req.Symbol)
+	c := cryptocurrency.GetBySymbol(req.Symbol)
 	if c == nil {
-		return fmt.Errorf("crypto with symbol %s not found", req.Symbol)
+		return fmt.Errorf("cryptocurrency with symbol %s not found", req.Symbol)
 	}
 
-	info, err := c.Info()
-	if err != nil {
-		log.Error().Err(err).Msg("failed to get blockchain info")
-		return fmt.Errorf("failed to get blockchain info")
-	}
-
-	if info.VerificationProgress < 0.95 {
-		log.Error().Msg("blockchain is not fully synced")
-		return fmt.Errorf("blockchain is not fully synced")
+	if !c.Synced() {
+		return fmt.Errorf("cryptocurrency with symbol %s already synced", req.Symbol)
 	}
 
 	exchangeRate, err := c.Price(req.Currency)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to get price in %s", req.Currency)
 		return fmt.Errorf("failed to get price in %s", req.Currency)
-	}
-
-	wallets, err := c.ListWallets()
-	if err != nil {
-		log.Error().Err(err).Msg("failed to list wallets")
-		return fmt.Errorf("failed to list wallets")
-	}
-
-	var walletLoaded bool
-	for _, wallet := range wallets {
-		if wallet == os.Getenv("WALLET_NAME") {
-			walletLoaded = true
-			break
-		}
-	}
-
-	if !walletLoaded {
-		log.Info().Msgf("wallet %s not found, loading...", os.Getenv("WALLET_NAME"))
-		if err := c.LoadWallet(os.Getenv("WALLET_NAME")); err != nil {
-			return fmt.Errorf("failed to load wallet")
-		}
 	}
 
 	fees, err := c.EstimateFees()
