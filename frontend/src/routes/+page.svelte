@@ -124,18 +124,18 @@ X-Api-Key: YOUR_API_KEY
 
 <!-- NAV -->
 <nav class="border-border/50 sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
-	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-		<div class="flex items-center gap-2">
-			<span class="text-sm font-medium tracking-tight text-foreground">lite<span class="text-muted-foreground">pay</span></span>
-			<Badge variant="outline">{version}</Badge>
+	<div class="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-6">
+		<div class="flex items-center gap-1 sm:gap-2 min-w-0">
+			<span class="text-xs sm:text-sm font-medium tracking-tight text-foreground whitespace-nowrap">lite<span class="text-muted-foreground">pay</span></span>
+			<Badge variant="outline" class="hidden sm:flex text-xs">{version}</Badge>
 		</div>
-		<div class="flex items-center gap-2">
+		<div class="flex items-center gap-1 sm:gap-2">
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
-						<Button variant="ghost" size="sm" {...props} class="gap-2">
+						<Button variant="ghost" size="sm" {...props} class="gap-1 sm:gap-2 px-2 sm:px-3">
 							<TranslateIcon size={16} />
-							<span class="uppercase">{getLocale()}</span>
+							<span class="uppercase hidden sm:inline">{getLocale()}</span>
 						</Button>
 					{/snippet}
 				</DropdownMenu.Trigger>
@@ -161,14 +161,14 @@ X-Api-Key: YOUR_API_KEY
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
-			<Separator orientation="vertical" class="mx-1 h-4" />
+			<Separator orientation="vertical" class="mx-0.5 sm:mx-1 h-4 hidden sm:block" />
 
-			<Button variant="ghost" size="sm" href="https://github.com/szerookii/litepay">{m.landing_nav_github()}</Button>
-			<Button variant="ghost" size="sm" href="#api">{m.landing_nav_docs()}</Button>
+			<Button variant="ghost" size="sm" href="https://github.com/szerookii/litepay" class="px-2 sm:px-3 hidden sm:inline-flex">{m.landing_nav_github()}</Button>
+			<Button variant="ghost" size="sm" href="#api" class="px-2 sm:px-3 hidden sm:inline-flex">{m.landing_nav_docs()}</Button>
 			{#if allowRegister}
-				<Button variant="ghost" size="sm" href="/auth/register">{m.landing_nav_register()}</Button>
+				<Button variant="ghost" size="sm" href="/auth/register" class="px-2 sm:px-3 hidden sm:inline-flex">{m.landing_nav_register()}</Button>
 			{/if}
-			<Button variant="outline" size="sm" href="/auth/login">{m.landing_nav_login()}</Button>
+			<Button variant="outline" size="sm" href="/auth/login" class="px-2 sm:px-3 text-xs sm:text-sm">{m.landing_nav_login()}</Button>
 		</div>
 	</div>
 </nav>
