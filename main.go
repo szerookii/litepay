@@ -58,11 +58,6 @@ func main() {
 
 	log.Info().Msg("Starting LitePay...")
 
-	// Apply database migrations
-	if err := db.Client().Schema.Create(context.Background()); err != nil {
-		log.Fatal().Err(err).Msg("Failed to apply database migrations")
-	}
-
 	cryptocurrency.Register(&bitcoin.Bitcoin{})
 	cryptocurrency.Register(&litecoin.Litecoin{})
 	cryptocurrency.Register(&solana.Solana{})
