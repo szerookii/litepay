@@ -1,20 +1,21 @@
 <script lang="ts">
-	import "../app.css";
+	import type { Pathname } from '$app/types';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import './layout.css';
+	import favicon from '$lib/assets/favicon.svg';
+	import { ModeWatcher } from 'mode-watcher';
 
-	import { ModeWatcher } from "mode-watcher";
-	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
-
-	const queryClient = new QueryClient();
-	const { children } = $props();
+	let { children } = $props();
 </script>
 
-<svelte:head>
-	<meta name="darkreader-lock" />
-</svelte:head>
+<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<ModeWatcher defaultMode="dark" />
+{@render children()}
 
-<ModeWatcher defaultMode={"dark"} />
-<QueryClientProvider client={queryClient}>
-	<main class="min-h-screen scroll-smooth">
-		{@render children()}
-	</main>
-</QueryClientProvider>
+<div style="display:none">
+	{#each locales as locale (locale)}
+		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
+	{/each}
+</div>
