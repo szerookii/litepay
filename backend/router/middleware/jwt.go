@@ -12,13 +12,20 @@ import (
 const UserIDKey = "user_id"
 
 func JWT(c *gin.Context) {
-	header := c.GetHeader("Authorization")
-	if !strings.HasPrefix(header, "Bearer ") {
+	var tokenStr string
+
+	if cookie, err := c.Cookie("token"); err == nil {
+		tokenStr = cookie
+	} else if h := c.GetHeader("Authorization"); strings.HasPrefix(h, "Bearer ") {
+		tokenStr = strings.TrimPrefix(h, "Bearer ")
+	}
+
+	if tokenStr == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "missing token"})
 		return
 	}
 
-	claims, err := jwtutil.ValidateToken(strings.TrimPrefix(header, "Bearer "))
+	claims, err := jwtutil.ValidateToken(tokenStr)
 	if err != nil {
 		if errors.Is(err, jwtutil.ErrExpiredToken) {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token expired"})

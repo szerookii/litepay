@@ -18,6 +18,7 @@ import (
 	"github.com/szerookii/litepay/backend/cryptocurrency/solana"
 	"github.com/szerookii/litepay/backend/db"
 	"github.com/szerookii/litepay/backend/router"
+	"github.com/szerookii/litepay/backend/secrets"
 	"github.com/szerookii/litepay/backend/utils/env"
 )
 
@@ -29,13 +30,17 @@ func main() {
 		env.WithDefault("PORT", "8080"),
 		env.Required("DATABASE_URL"),
 		env.Required("JWT_SECRET", env.MinLen(32)),
-		env.Required("MASTER_SEED", env.MinLen(12)),
+		env.Optional("SECRET_PROVIDER", env.OneOf("env", "vault", "bitwarden", "aws", "gcp")),
 		env.Optional("ALLOW_REGISTER", env.OneOf("true", "false")),
 		env.Optional("BTC_RPC_URL"),
 		env.Optional("LTC_RPC_URL"),
 		env.Optional("SOL_RPC_URL"),
 		env.Optional("ALLOWED_ORIGINS"),
 	); err != nil {
+		log.Fatal().Msg(err.Error())
+	}
+
+	if err := secrets.Load(context.Background()); err != nil {
 		log.Fatal().Msg(err.Error())
 	}
 

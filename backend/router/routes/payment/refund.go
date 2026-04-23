@@ -9,7 +9,7 @@ import (
 	"github.com/szerookii/litepay/backend/db"
 	entpayment "github.com/szerookii/litepay/backend/ent/payment"
 	"github.com/szerookii/litepay/backend/router/middleware"
-	"github.com/szerookii/litepay/backend/router/routes/user"
+	"github.com/szerookii/litepay/backend/secrets"
 	"github.com/szerookii/litepay/backend/utils"
 )
 
@@ -66,8 +66,8 @@ func Refund(c *gin.Context) {
 		return
 	}
 
-	masterSeed, err := user.DeriveMasterSeed()
-	if err != nil || masterSeed == nil {
+	masterSeed, err := secrets.DeriveMasterSeed()
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "seed unavailable"})
 		return
 	}

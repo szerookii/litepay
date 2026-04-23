@@ -45,5 +45,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	setAuthCookie(c, token, 86400)
 	utils.SendJSON(c, http.StatusOK, gin.H{"token": token})
 }

@@ -63,15 +63,11 @@
 		refunding = true;
 		refundError = '';
 		refundResult = null;
-		const token = localStorage.getItem('token');
 		try {
-			const res = await fetch(`/api/payment/${refundPayment.id}/refund`, {
-				method: 'POST',
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const res = await fetch(`/api/payment/${refundPayment.id}/refund`, { method: 'POST' });
 			const data = await res.json();
 			if (!res.ok) {
-				refundError = data.message ?? 'Refund failed';
+				refundError = data.message ?? m.transactions_refund_failed();
 			} else {
 				refundResult = { tx_hash: data.tx_hash, to: data.to };
 				load(true);
@@ -137,19 +133,15 @@
 		if (isRefresh) refreshing = true;
 		else loading = true;
 
-		const token = localStorage.getItem('token');
-		if (!token) return;
 		try {
 			const [paymentsRes, meRes] = await Promise.all([
-				fetch('/api/user/payments', { headers: { Authorization: `Bearer ${token}` } }),
-				supportedCoins.length === 0
-					? fetch('/api/user/me', { headers: { Authorization: `Bearer ${token}` } })
-					: Promise.resolve(null)
+				fetch('/api/user/payments'),
+				supportedCoins.length === 0 ? fetch('/api/user/me') : Promise.resolve(null)
 			]);
 			if (paymentsRes.ok) {
 				payments = await paymentsRes.json();
 			} else {
-				error = 'Failed to load payments';
+				error = m.transactions_failed_load();
 			}
 			if (meRes?.ok) {
 				const me = await meRes.json();
@@ -157,7 +149,7 @@
 				if (!createSymbol && supportedCoins.length > 0) createSymbol = supportedCoins[0];
 			}
 		} catch {
-			error = 'Network error';
+			error = m.transactions_network_error();
 		} finally {
 			loading = false;
 			refreshing = false;
@@ -167,11 +159,8 @@
 	async function createPayment() {
 		creating = true;
 		createError = '';
-		const token = localStorage.getItem('token');
 		try {
-			const meRes = await fetch('/api/user/me', {
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const meRes = await fetch('/api/user/me');
 			const me = await meRes.json();
 
 			const res = await fetch('/api/payment', {
@@ -233,17 +222,17 @@
 	}
 
 	const STATUS_OPTIONS = [
-		{ value: 'ALL', label: 'All statuses' },
-		{ value: 'PENDING', label: 'Pending' },
-		{ value: 'CONFIRMING', label: 'Confirming' },
-		{ value: 'PAID', label: 'Paid' },
-		{ value: 'REFUNDED', label: 'Refunded' },
-		{ value: 'CASHED_OUT', label: 'Cashed out' },
-		{ value: 'EXPIRED', label: 'Expired' }
+		{ value: 'ALL', label: m.transactions_status_all() },
+		{ value: 'PENDING', label: m.transactions_status_pending() },
+		{ value: 'CONFIRMING', label: m.transactions_status_confirming() },
+		{ value: 'PAID', label: m.transactions_status_confirmed() },
+		{ value: 'REFUNDED', label: m.transactions_status_refunded() },
+		{ value: 'CASHED_OUT', label: m.transactions_status_cashed_out() },
+		{ value: 'EXPIRED', label: m.transactions_status_expired() }
 	];
 
 	const CURRENCY_OPTIONS = $derived([
-		{ value: 'ALL', label: 'All assets' },
+		{ value: 'ALL', label: m.transactions_all_assets() },
 		...supportedCoins.map((c) => ({ value: c, label: c }))
 	]);
 </script>
@@ -278,7 +267,7 @@
 		<div class="relative flex-1 min-w-48">
 			<MagnifyingGlass size={13} class="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
 			<Input
-				placeholder="Search by address, tx hash, ID…"
+				placeholder={m.transactions_search_placeholder()}
 				bind:value={search}
 				class="pl-7 text-xs h-8"
 			/>
@@ -309,7 +298,7 @@
 				class="h-8 text-xs text-muted-foreground"
 				onclick={() => { search = ''; filterStatus = 'ALL'; filterCurrency = 'ALL'; }}
 			>
-				Clear filters
+				{m.transactions_clear_filters()}
 			</Button>
 		{/if}
 	</div>
@@ -326,7 +315,7 @@
 		<div class="flex flex-col items-center justify-center space-y-3 py-12 text-center ring-1 ring-border">
 			<Receipt size={32} class="text-muted-foreground" />
 			<p class="text-xs text-muted-foreground">
-				{payments.length === 0 ? m.transactions_empty() : 'No transactions match your filters'}
+				{payments.length === 0 ? m.transactions_empty() : m.transactions_no_match()}
 			</p>
 		</div>
 	{:else}
@@ -358,17 +347,17 @@
 									{:else if resolveStatus(p) === 'CONFIRMING'}
 										<div class="flex items-center gap-1.5 text-yellow-400">
 											<Clock size={12} />
-											<span>Confirming</span>
+											<span>{m.transactions_status_confirming()}</span>
 										</div>
 									{:else if resolveStatus(p) === 'REFUNDED'}
 										<div class="flex items-center gap-1.5 text-blue-400">
 											<ArrowUUpLeft size={12} />
-											<span>Refunded</span>
+											<span>{m.transactions_status_refunded()}</span>
 										</div>
 									{:else if resolveStatus(p) === 'CASHED_OUT'}
 										<div class="flex items-center gap-1.5 text-emerald-400">
 											<ArrowUpRight size={12} />
-											<span>Cashed out</span>
+											<span>{m.transactions_status_cashed_out()}</span>
 										</div>
 									{:else if resolveStatus(p) === 'EXPIRED'}
 										<div class="flex items-center gap-1.5 text-muted-foreground/50">
@@ -423,7 +412,7 @@
 											onclick={() => { refundPayment = p; refundError = ''; refundResult = null; }}
 										>
 											<ArrowUUpLeft size={10} />
-											Refund
+											{m.transactions_refund_button()}
 										</Button>
 									{/if}
 								</td>
@@ -437,8 +426,8 @@
 		<!-- Pagination -->
 		<div class="flex items-center justify-between text-xs text-muted-foreground">
 			<span>
-				{filtered.length} result{filtered.length !== 1 ? 's' : ''}
-				{#if totalPages > 1}— page {page} of {totalPages}{/if}
+				{filtered.length} {filtered.length === 1 ? m.transactions_result_singular() : m.transactions_result_plural()}
+				{#if totalPages > 1}— {m.transactions_page_label({ current: page, total: totalPages })}{/if}
 			</span>
 			{#if totalPages > 1}
 				<div class="flex items-center gap-1">
@@ -539,43 +528,43 @@
 <Dialog.Root open={!!refundPayment} onOpenChange={(o) => { if (!o) closeRefundDialog(); }}>
 	<Dialog.Content class="sm:max-w-sm">
 		<Dialog.Header>
-			<Dialog.Title>Refund payment</Dialog.Title>
+			<Dialog.Title>{m.transactions_refund_title()}</Dialog.Title>
 		</Dialog.Header>
 		{#if refundResult}
 			<div class="space-y-3 py-2">
-				<p class="text-xs text-muted-foreground">Transaction broadcast successfully.</p>
+				<p class="text-xs text-muted-foreground">{m.transactions_refund_success()}</p>
 				<div class="space-y-1 text-xs">
 					<div class="flex justify-between">
-						<span class="text-muted-foreground">To</span>
+						<span class="text-muted-foreground">{m.transactions_refund_to_label()}</span>
 						<span class="font-mono">{refundResult.to.slice(0, 12)}…</span>
 					</div>
 					<div class="flex justify-between">
-						<span class="text-muted-foreground">Tx</span>
+						<span class="text-muted-foreground">{m.transactions_refund_tx_label()}</span>
 						<span class="font-mono">{refundResult.tx_hash.slice(0, 12)}…</span>
 					</div>
 				</div>
 			</div>
 			<Dialog.Footer>
-				<Button size="sm" class="text-xs" onclick={closeRefundDialog}>Close</Button>
+				<Button size="sm" class="text-xs" onclick={closeRefundDialog}>{m.transactions_close()}</Button>
 			</Dialog.Footer>
 		{:else}
 			<div class="space-y-3 py-2">
 				<p class="text-xs text-muted-foreground">
-					This will send back <span class="font-medium text-foreground">{refundPayment?.amount_crypto} {refundPayment?.currency_crypto}</span> to the original sender. Network fees will be deducted.
+					{m.transactions_refund_message({ amount: refundPayment?.amount_crypto, symbol: refundPayment?.currency_crypto })}
 				</p>
 				{#if refundError}
 					<p class="text-xs text-destructive">{refundError}</p>
 				{/if}
 			</div>
 			<Dialog.Footer class="gap-2">
-				<Button variant="outline" size="sm" class="text-xs" onclick={closeRefundDialog} disabled={refunding}>Cancel</Button>
+				<Button variant="outline" size="sm" class="text-xs" onclick={closeRefundDialog} disabled={refunding}>{m.transactions_cancel()}</Button>
 				<Button size="sm" class="gap-1.5 text-xs" onclick={doRefund} disabled={refunding}>
 					{#if refunding}
 						<Spinner size={12} class="animate-spin" />
-						Sending…
+						{m.transactions_refund_sending()}
 					{:else}
 						<ArrowUUpLeft size={12} />
-						Confirm refund
+						{m.transactions_refund_confirm()}
 					{/if}
 				</Button>
 			</Dialog.Footer>

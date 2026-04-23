@@ -32,12 +32,10 @@
 	let balanceLoading = $state(true);
 
 	async function loadData(): Promise<void> {
-		const token = localStorage.getItem('token');
-		if (!token) return;
 		try {
 			const [meRes, balRes] = await Promise.all([
-				fetch('/api/user/me', { headers: { Authorization: `Bearer ${token}` } }),
-				fetch('/api/user/balance', { headers: { Authorization: `Bearer ${token}` } })
+				fetch('/api/user/me'),
+				fetch('/api/user/balance')
 			]);
 			if (meRes.ok) {
 				const me = await meRes.json();
@@ -62,17 +60,16 @@
 	let done = $state(false);
 
 	async function submit() {
-		if (!destination.trim()) { error = 'Destination address required'; return; }
+		if (!destination.trim()) { error = m.cashout_destination_required(); return; }
 		loading = true;
 		error = '';
 		done = false;
 		results = [];
 
-		const token = localStorage.getItem('token');
 		try {
 			const res = await fetch('/api/user/cashout', {
 				method: 'POST',
-				headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					symbol,
 					destination: destination.trim()
@@ -80,7 +77,7 @@
 			});
 			const data = await res.json();
 			if (!res.ok) {
-				error = data.message ?? 'Cashout failed';
+				error = data.message ?? m.cashout_failed();
 				if (data.details) error += ' — ' + data.details.map((d: {address: string; reason: string}) => `${d.address.slice(0,8)}…: ${d.reason}`).join('; ');
 			} else {
 				results = data.transactions ?? [];
@@ -88,7 +85,7 @@
 				loadData();
 			}
 		} catch {
-			error = 'Network error';
+			error = m.cashout_network_error();
 		} finally {
 			loading = false;
 		}
@@ -98,7 +95,6 @@
 		done = false;
 		results = [];
 		destination = '';
-		amount = '';
 		loadData();
 	}
 </script>
@@ -106,13 +102,13 @@
 <div class="max-w-lg space-y-8">
 	<div class="space-y-1">
 		<p class="text-xs uppercase tracking-widest text-muted-foreground">{m.dash_nav_dashboard()}</p>
-		<h1 class="text-xl font-medium text-foreground">Cashout</h1>
-		<p class="text-xs text-muted-foreground">Sweep received funds to your personal wallet.</p>
+		<h1 class="text-xl font-medium text-foreground">{m.cashout_title()}</h1>
+		<p class="text-xs text-muted-foreground">{m.cashout_subtitle()}</p>
 	</div>
 
 	<!-- Balances -->
 	<div class="space-y-2">
-		<p class="text-xs uppercase tracking-widest text-muted-foreground">Available balance</p>
+		<p class="text-xs uppercase tracking-widest text-muted-foreground">{m.cashout_balance_label()}</p>
 		<div class="grid gap-2" style="grid-template-columns: repeat({Math.min(supportedCoins.length || 3, 4)}, minmax(0, 1fr))">
 			{#each (balanceLoading ? ['BTC', 'LTC', 'SOL'] : supportedCoins) as sym}
 				<div class="ring-1 ring-border p-3 space-y-1 {balanceLoading ? 'animate-pulse' : ''}">
@@ -129,7 +125,7 @@
 				</div>
 			{/each}
 		</div>
-		<p class="text-[10px] text-muted-foreground">Confirmed PAID payments only</p>
+		<p class="text-[10px] text-muted-foreground">{m.cashout_balance_helper()}</p>
 	</div>
 
 	{#if done}
@@ -137,7 +133,7 @@
 		<div class="space-y-4">
 			<div class="flex items-center gap-2 text-sm font-medium text-foreground">
 				<CheckCircle size={16} color="#4ade80" weight="fill" />
-				{results.length} transaction{results.length !== 1 ? 's' : ''} broadcast
+				{m.cashout_broadcast_success({ count: results.length })}
 			</div>
 			<div class="space-y-2">
 				{#each results as tx}
@@ -158,14 +154,14 @@
 					</div>
 				{/each}
 			</div>
-			<Button variant="outline" size="sm" class="text-xs" onclick={reset}>New cashout</Button>
+			<Button variant="outline" size="sm" class="text-xs" onclick={reset}>{m.cashout_new_button()}</Button>
 		</div>
 	{:else}
 		<!-- Form -->
 		<div class="space-y-6">
 			<!-- Asset selector -->
 			<div class="space-y-2">
-				<Label class="text-xs">Asset</Label>
+				<Label class="text-xs">{m.cashout_asset_label()}</Label>
 				<div class="grid gap-2" style="grid-template-columns: repeat({Math.min(supportedCoins.length || 3, 4)}, minmax(0, 1fr))">
 					{#each supportedCoins as sym}
 						<button
@@ -185,9 +181,9 @@
 
 			<!-- Destination -->
 			<div class="space-y-2">
-				<Label class="text-xs">Destination address</Label>
+				<Label class="text-xs">{m.cashout_destination_label()}</Label>
 				<Input
-					placeholder="Your {symbol} wallet address"
+					placeholder={m.cashout_destination_placeholder({ symbol })}
 					bind:value={destination}
 					class="text-xs font-mono"
 				/>
@@ -196,7 +192,7 @@
 			<!-- Warning -->
 			<div class="flex gap-2 ring-1 ring-border p-3 text-xs text-muted-foreground">
 				<Warning size={14} class="mt-0.5 shrink-0 text-yellow-400" />
-				<span>This sends funds on-chain. Double-check the destination address — transactions cannot be reversed.</span>
+				<span>{m.cashout_warning()}</span>
 			</div>
 
 			{#if error}
@@ -210,9 +206,9 @@
 			>
 				{#if loading}
 					<Spinner size={14} class="animate-spin" />
-					Broadcasting…
+					{m.cashout_broadcasting()}
 				{:else}
-					Cashout {symbol}
+					{m.cashout_button({ symbol })}
 					<ArrowRight size={14} />
 				{/if}
 			</Button>

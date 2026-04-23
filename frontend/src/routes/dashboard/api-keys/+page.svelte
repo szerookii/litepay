@@ -19,11 +19,7 @@
 	const displayKey = $derived(revealed ? apiKey : maskedKey);
 
 	async function load(): Promise<void> {
-		const token = localStorage.getItem('token');
-		if (!token) return;
-		const res = await fetch('/api/user/me', {
-			headers: { Authorization: `Bearer ${token}` }
-		});
+		const res = await fetch('/api/user/me');
 		if (res.ok) {
 			const me = await res.json();
 			apiKey = me.api_key;
@@ -44,12 +40,8 @@
 		regenerating = true;
 		error = '';
 		confirmRegen = false;
-		const token = localStorage.getItem('token');
 		try {
-			const res = await fetch('/api/user/api-key', {
-				method: 'POST',
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const res = await fetch('/api/user/api-key', { method: 'POST' });
 			if (res.ok) {
 				const data = await res.json();
 				apiKey = data.api_key;

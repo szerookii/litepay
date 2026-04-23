@@ -3,7 +3,6 @@ package payment
 import (
 	"context"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -14,9 +13,8 @@ import (
 	"github.com/szerookii/litepay/backend/ent"
 	entpayment "github.com/szerookii/litepay/backend/ent/payment"
 	"github.com/szerookii/litepay/backend/router/middleware"
+	"github.com/szerookii/litepay/backend/secrets"
 	"github.com/szerookii/litepay/backend/utils"
-	"golang.org/x/crypto/pbkdf2"
-	"crypto/sha512"
 )
 
 type CreatePaymentRequest struct {
@@ -34,11 +32,6 @@ type CreatePaymentResponse struct {
 	CurrencyFiat   string            `json:"currency_fiat"`
 	Status         entpayment.Status `json:"status"`
 	ExpiresAt      time.Time         `json:"expires_at"`
-}
-
-// mnemonicToSeed converts a BIP39 mnemonic to a 64-byte seed via PBKDF2-HMAC-SHA512.
-func mnemonicToSeed(mnemonic string) []byte {
-	return pbkdf2.Key([]byte(mnemonic), []byte("mnemonic"), 2048, 64, sha512.New)
 }
 
 func Post(ctx *gin.Context) {
@@ -69,7 +62,11 @@ func Post(ctx *gin.Context) {
 
 	cryptoAmount := req.Amount / exchangeRate
 
-	masterSeed := mnemonicToSeed(os.Getenv("MASTER_SEED"))
+	masterSeed, err := secrets.DeriveMasterSeed()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "seed unavailable"})
+		return
+	}
 	defer func() {
 		for i := range masterSeed {
 			masterSeed[i] = 0

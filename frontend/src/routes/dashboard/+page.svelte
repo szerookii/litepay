@@ -24,10 +24,8 @@
 	};
 
 	async function load(): Promise<void> {
-		const token = localStorage.getItem('token');
-		if (!token) return;
 		try {
-			const meRes = await fetch('/api/user/me', { headers: { Authorization: `Bearer ${token}` } });
+			const meRes = await fetch('/api/user/me');
 			if (meRes.ok) me = await meRes.json();
 			else error = 'Failed to load account info';
 		} catch {

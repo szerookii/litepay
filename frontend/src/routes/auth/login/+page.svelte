@@ -43,7 +43,6 @@
 				return;
 			}
 
-			localStorage.setItem('token', data.token);
 			goto('/dashboard');
 		} catch {
 			error = 'Network error';

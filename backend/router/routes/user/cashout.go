@@ -2,10 +2,8 @@ package user
 
 import (
 	"context"
-	"crypto/sha512"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -13,8 +11,8 @@ import (
 	"github.com/szerookii/litepay/backend/db"
 	entpayment "github.com/szerookii/litepay/backend/ent/payment"
 	"github.com/szerookii/litepay/backend/router/middleware"
+	"github.com/szerookii/litepay/backend/secrets"
 	"github.com/szerookii/litepay/backend/utils"
-	"golang.org/x/crypto/pbkdf2"
 )
 
 type cashoutRequest struct {
@@ -52,7 +50,7 @@ func Cashout(c *gin.Context) {
 		return
 	}
 
-	masterSeed, err := DeriveMasterSeed()
+	masterSeed, err := secrets.DeriveMasterSeed()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "seed unavailable"})
 		return
@@ -132,13 +130,3 @@ func Cashout(c *gin.Context) {
 	utils.SendJSON(c, http.StatusOK, gin.H{"transactions": results})
 }
 
-// DeriveMasterSeed converts MASTER_SEED mnemonic → 64-byte seed via BIP39 PBKDF2-HMAC-SHA512.
-// Must match the derivation used in payment/post.go.
-func DeriveMasterSeed() ([]byte, error) {
-	mnemonic := os.Getenv("MASTER_SEED")
-	if mnemonic == "" {
-		return nil, nil
-	}
-	seed := pbkdf2.Key([]byte(mnemonic), []byte("mnemonic"), 2048, 64, sha512.New)
-	return seed, nil
-}

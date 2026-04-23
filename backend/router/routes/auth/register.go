@@ -63,5 +63,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	setAuthCookie(c, token, 86400)
 	utils.SendJSON(c, http.StatusCreated, gin.H{"token": token})
 }
