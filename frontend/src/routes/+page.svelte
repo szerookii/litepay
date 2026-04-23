@@ -82,7 +82,7 @@
 
 	const apiExample = `POST /payments
 Content-Type: application/json
-X-Api-Key: YOUR_API_KEY
+Authorization: Bearer YOUR_API_KEY
 
 {
   "symbol": "LTC",
@@ -223,7 +223,7 @@ X-Api-Key: YOUR_API_KEY
 					</div>
 					<pre class="overflow-x-auto bg-card p-5 text-xs leading-relaxed"><code><span class="text-muted-foreground">{m.landing_hero_terminal_comment()}</span>
 <span class="text-green-400">$</span> curl -X POST https://pay.example.com/payments \
-    -H <span class="text-yellow-400">"X-Api-Key: sk_live_..."</span> \
+    -H <span class="text-yellow-400">"Authorization: Bearer sk_live_..."</span> \
     -d <span class="text-yellow-400">'&#123;"symbol":"LTC","amount":49.99,"currency":"USD"&#125;'</span>
 
 <span class="text-muted-foreground">&#123;</span>
