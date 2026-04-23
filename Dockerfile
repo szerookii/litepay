@@ -18,6 +18,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o litepay .
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y ca-certificates netcat-openbsd && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /go /home/nonroot && chown -R 65534:65534 /go /home/nonroot
 COPY --from=backend-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=backend-builder /usr/local/bin/atlas /usr/local/bin/atlas
 COPY --from=backend-builder /app/atlas.hcl /atlas.hcl
@@ -25,5 +26,8 @@ COPY --from=backend-builder /app/migrations /migrations
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 USER 65534:65534
+ENV HOME=/home/nonroot
+ENV GOCACHE=/go
+ENV ATLAS_CACHE=/home/nonroot/.atlas/cache
 EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
