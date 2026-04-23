@@ -19,7 +19,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o litepay .
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y ca-certificates netcat-openbsd && rm -rf /var/lib/apt/lists/*
 COPY --from=backend-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=backend-builder /root/.atlas/bin/atlas /usr/local/bin/atlas
+COPY --from=backend-builder /root/.local/bin/atlas /usr/local/bin/atlas
 COPY --from=backend-builder /app/atlas.hcl /atlas.hcl
 COPY --from=backend-builder /app/migrations /migrations
 COPY entrypoint.sh /entrypoint.sh
