@@ -176,6 +176,7 @@
 
 	"auth_register_title": "Create Account",
 	"auth_register_subtitle": "Start accepting crypto payments today",
+	"auth_register_email": "Email address",
 	"auth_register_submit": "Create account",
 	"auth_register_submitting": "Creating account...",
 	"auth_register_have_account": "Already have an account?",
