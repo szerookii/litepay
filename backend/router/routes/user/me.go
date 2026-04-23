@@ -13,11 +13,12 @@ import (
 )
 
 type meResponse struct {
-	ID           string   `json:"id"`
-	Email        string   `json:"email"`
-	APIKey       string   `json:"api_key"`
-	WebhookURL   *string  `json:"webhook_url"`
-	AccountIndex int      `json:"account_index"`
+	ID             string   `json:"id"`
+	Email          string   `json:"email"`
+	APIKey         string   `json:"api_key"`
+	WebhookURL     *string  `json:"webhook_url"`
+	WebhookSecret  *string  `json:"webhook_secret"`
+	AccountIndex   int      `json:"account_index"`
 	SupportedCoins []string `json:"supported_coins"`
 }
 
@@ -46,6 +47,7 @@ func Me(c *gin.Context) {
 		Email:          u.Email,
 		APIKey:         u.APIKey,
 		WebhookURL:     u.WebhookURL,
+		WebhookSecret:  u.WebhookSecret,
 		AccountIndex:   u.AccountIndex,
 		SupportedCoins: coins,
 	})

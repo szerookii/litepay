@@ -50,6 +50,7 @@ func Init() *gin.Engine {
 	authGroup.Use(middleware.AuthLimiter.Middleware())
 	authGroup.POST("/register", routeauth.Register)
 	authGroup.POST("/login", routeauth.Login)
+	authGroup.POST("/logout", routeauth.Logout)
 
 	// Merchant API — API key auth, user in context
 	protected := api.Group("")
@@ -64,6 +65,7 @@ func Init() *gin.Engine {
 	userGroup.GET("/balance", routeuser.Balance)
 	userGroup.PUT("/wallets", routeuser.UpdateWallets)
 	userGroup.POST("/api-key", routeuser.RegenerateKey)
+	userGroup.POST("/webhook-secret", routeuser.RotateWebhookSecret)
 	userGroup.POST("/cashout", routeuser.Cashout)
 
 	paymentGroup := api.Group("/payment")
