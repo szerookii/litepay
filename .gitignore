@@ -21,10 +21,13 @@
 go.work
 go.work.sum
 
+# System files
+.DS_Store
+Thumbs.db
+
 # env file
 .env
 /.idea
-backend/cryptocurrency/.DS_Store
 .claude
 .gemini
 CLAUDE.md
