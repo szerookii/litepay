@@ -142,8 +142,7 @@ X-Api-Key: YOUR_API_KEY
 				<DropdownMenu.Content align="end">
 					{#each locales as locale}
 						<DropdownMenu.Item>
-							<a
-								href="#"
+							<button
 								onclick={(e) => {
 									e.preventDefault();
 									setLocale(locale);
@@ -156,7 +155,7 @@ X-Api-Key: YOUR_API_KEY
 								{#if locale === getLocale()}
 									<div class="size-1.5 rounded-full bg-primary"></div>
 								{/if}
-							</a>
+							</button>
 						</DropdownMenu.Item>
 					{/each}
 				</DropdownMenu.Content>

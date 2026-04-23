@@ -10,11 +10,11 @@
 
 	let { config, url, locale = getLocale() }: Props = $props();
 
-	const currentUrl = url === '/' ? BASE_URL : `${BASE_URL}${url}`;
-	const canonicalUrl = url === '/' ? BASE_URL : currentUrl;
-	const ogImage = config.ogImage ?? undefined;
-	const themeColor = config.themeColor ?? '#000000';
-	const twitterHandle = config.twitterHandle ?? TWITTER_HANDLE;
+	const currentUrl = $derived(url === '/' ? BASE_URL : `${BASE_URL}${url}`);
+	const canonicalUrl = $derived(url === '/' ? BASE_URL : currentUrl);
+	const ogImage = $derived(config.ogImage ?? undefined);
+	const themeColor = $derived(config.themeColor ?? '#000000');
+	const twitterHandle = $derived(config.twitterHandle ?? TWITTER_HANDLE);
 </script>
 
 <svelte:head>
