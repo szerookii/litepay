@@ -29,6 +29,8 @@ const (
 	FieldAccountIndex = "account_index"
 	// FieldWebhookURL holds the string denoting the webhook_url field in the database.
 	FieldWebhookURL = "webhook_url"
+	// FieldWebhookSecret holds the string denoting the webhook_secret field in the database.
+	FieldWebhookSecret = "webhook_secret"
 	// EdgePayments holds the string denoting the payments edge name in mutations.
 	EdgePayments = "payments"
 	// Table holds the table name of the user in the database.
@@ -52,6 +54,7 @@ var Columns = []string{
 	FieldAPIKey,
 	FieldAccountIndex,
 	FieldWebhookURL,
+	FieldWebhookSecret,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -118,6 +121,11 @@ func ByAccountIndex(opts ...sql.OrderTermOption) OrderOption {
 // ByWebhookURL orders the results by the webhook_url field.
 func ByWebhookURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWebhookURL, opts...).ToFunc()
+}
+
+// ByWebhookSecret orders the results by the webhook_secret field.
+func ByWebhookSecret(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWebhookSecret, opts...).ToFunc()
 }
 
 // ByPaymentsCount orders the results by payments count.

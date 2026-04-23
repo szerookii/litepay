@@ -91,6 +91,11 @@ func WebhookURL(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldWebhookURL, v))
 }
 
+// WebhookSecret applies equality check predicate on the "webhook_secret" field. It's identical to WebhookSecretEQ.
+func WebhookSecret(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldWebhookSecret, v))
+}
+
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
 func CreateTimeEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreateTime, v))
@@ -479,6 +484,81 @@ func WebhookURLEqualFold(v string) predicate.User {
 // WebhookURLContainsFold applies the ContainsFold predicate on the "webhook_url" field.
 func WebhookURLContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldWebhookURL, v))
+}
+
+// WebhookSecretEQ applies the EQ predicate on the "webhook_secret" field.
+func WebhookSecretEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldWebhookSecret, v))
+}
+
+// WebhookSecretNEQ applies the NEQ predicate on the "webhook_secret" field.
+func WebhookSecretNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldWebhookSecret, v))
+}
+
+// WebhookSecretIn applies the In predicate on the "webhook_secret" field.
+func WebhookSecretIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldWebhookSecret, vs...))
+}
+
+// WebhookSecretNotIn applies the NotIn predicate on the "webhook_secret" field.
+func WebhookSecretNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldWebhookSecret, vs...))
+}
+
+// WebhookSecretGT applies the GT predicate on the "webhook_secret" field.
+func WebhookSecretGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldWebhookSecret, v))
+}
+
+// WebhookSecretGTE applies the GTE predicate on the "webhook_secret" field.
+func WebhookSecretGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldWebhookSecret, v))
+}
+
+// WebhookSecretLT applies the LT predicate on the "webhook_secret" field.
+func WebhookSecretLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldWebhookSecret, v))
+}
+
+// WebhookSecretLTE applies the LTE predicate on the "webhook_secret" field.
+func WebhookSecretLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldWebhookSecret, v))
+}
+
+// WebhookSecretContains applies the Contains predicate on the "webhook_secret" field.
+func WebhookSecretContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldWebhookSecret, v))
+}
+
+// WebhookSecretHasPrefix applies the HasPrefix predicate on the "webhook_secret" field.
+func WebhookSecretHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldWebhookSecret, v))
+}
+
+// WebhookSecretHasSuffix applies the HasSuffix predicate on the "webhook_secret" field.
+func WebhookSecretHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldWebhookSecret, v))
+}
+
+// WebhookSecretIsNil applies the IsNil predicate on the "webhook_secret" field.
+func WebhookSecretIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldWebhookSecret))
+}
+
+// WebhookSecretNotNil applies the NotNil predicate on the "webhook_secret" field.
+func WebhookSecretNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldWebhookSecret))
+}
+
+// WebhookSecretEqualFold applies the EqualFold predicate on the "webhook_secret" field.
+func WebhookSecretEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldWebhookSecret, v))
+}
+
+// WebhookSecretContainsFold applies the ContainsFold predicate on the "webhook_secret" field.
+func WebhookSecretContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldWebhookSecret, v))
 }
 
 // HasPayments applies the HasEdge predicate on the "payments" edge.

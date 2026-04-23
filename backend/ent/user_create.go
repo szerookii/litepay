@@ -88,6 +88,20 @@ func (_c *UserCreate) SetNillableWebhookURL(v *string) *UserCreate {
 	return _c
 }
 
+// SetWebhookSecret sets the "webhook_secret" field.
+func (_c *UserCreate) SetWebhookSecret(v string) *UserCreate {
+	_c.mutation.SetWebhookSecret(v)
+	return _c
+}
+
+// SetNillableWebhookSecret sets the "webhook_secret" field if the given value is not nil.
+func (_c *UserCreate) SetNillableWebhookSecret(v *string) *UserCreate {
+	if v != nil {
+		_c.SetWebhookSecret(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *UserCreate) SetID(v uuid.UUID) *UserCreate {
 	_c.mutation.SetID(v)
@@ -253,6 +267,10 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.WebhookURL(); ok {
 		_spec.SetField(user.FieldWebhookURL, field.TypeString, value)
 		_node.WebhookURL = &value
+	}
+	if value, ok := _c.mutation.WebhookSecret(); ok {
+		_spec.SetField(user.FieldWebhookSecret, field.TypeString, value)
+		_node.WebhookSecret = &value
 	}
 	if nodes := _c.mutation.PaymentsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

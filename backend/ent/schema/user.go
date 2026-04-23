@@ -28,6 +28,7 @@ func (User) Fields() []ent.Field {
 		// HD wallet account index — unique per user, assigned at registration
 		field.Int("account_index").Unique(),
 		field.String("webhook_url").Optional().Nillable(),
+		field.String("webhook_secret").Optional().Nillable(),
 	}
 }
 

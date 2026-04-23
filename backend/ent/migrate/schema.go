@@ -67,6 +67,7 @@ var (
 		{Name: "api_key", Type: field.TypeString, Unique: true},
 		{Name: "account_index", Type: field.TypeInt, Unique: true},
 		{Name: "webhook_url", Type: field.TypeString, Nullable: true},
+		{Name: "webhook_secret", Type: field.TypeString, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

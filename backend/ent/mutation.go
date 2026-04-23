@@ -1328,6 +1328,7 @@ type UserMutation struct {
 	account_index    *int
 	addaccount_index *int
 	webhook_url      *string
+	webhook_secret   *string
 	clearedFields    map[string]struct{}
 	payments         map[uuid.UUID]struct{}
 	removedpayments  map[uuid.UUID]struct{}
@@ -1726,6 +1727,55 @@ func (m *UserMutation) ResetWebhookURL() {
 	delete(m.clearedFields, user.FieldWebhookURL)
 }
 
+// SetWebhookSecret sets the "webhook_secret" field.
+func (m *UserMutation) SetWebhookSecret(s string) {
+	m.webhook_secret = &s
+}
+
+// WebhookSecret returns the value of the "webhook_secret" field in the mutation.
+func (m *UserMutation) WebhookSecret() (r string, exists bool) {
+	v := m.webhook_secret
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWebhookSecret returns the old "webhook_secret" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldWebhookSecret(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWebhookSecret is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWebhookSecret requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWebhookSecret: %w", err)
+	}
+	return oldValue.WebhookSecret, nil
+}
+
+// ClearWebhookSecret clears the value of the "webhook_secret" field.
+func (m *UserMutation) ClearWebhookSecret() {
+	m.webhook_secret = nil
+	m.clearedFields[user.FieldWebhookSecret] = struct{}{}
+}
+
+// WebhookSecretCleared returns if the "webhook_secret" field was cleared in this mutation.
+func (m *UserMutation) WebhookSecretCleared() bool {
+	_, ok := m.clearedFields[user.FieldWebhookSecret]
+	return ok
+}
+
+// ResetWebhookSecret resets all changes to the "webhook_secret" field.
+func (m *UserMutation) ResetWebhookSecret() {
+	m.webhook_secret = nil
+	delete(m.clearedFields, user.FieldWebhookSecret)
+}
+
 // AddPaymentIDs adds the "payments" edge to the Payment entity by ids.
 func (m *UserMutation) AddPaymentIDs(ids ...uuid.UUID) {
 	if m.payments == nil {
@@ -1814,7 +1864,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.create_time != nil {
 		fields = append(fields, user.FieldCreateTime)
 	}
@@ -1835,6 +1885,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.webhook_url != nil {
 		fields = append(fields, user.FieldWebhookURL)
+	}
+	if m.webhook_secret != nil {
+		fields = append(fields, user.FieldWebhookSecret)
 	}
 	return fields
 }
@@ -1858,6 +1911,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.AccountIndex()
 	case user.FieldWebhookURL:
 		return m.WebhookURL()
+	case user.FieldWebhookSecret:
+		return m.WebhookSecret()
 	}
 	return nil, false
 }
@@ -1881,6 +1936,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldAccountIndex(ctx)
 	case user.FieldWebhookURL:
 		return m.OldWebhookURL(ctx)
+	case user.FieldWebhookSecret:
+		return m.OldWebhookSecret(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -1939,6 +1996,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetWebhookURL(v)
 		return nil
+	case user.FieldWebhookSecret:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWebhookSecret(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -1987,6 +2051,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldWebhookURL) {
 		fields = append(fields, user.FieldWebhookURL)
 	}
+	if m.FieldCleared(user.FieldWebhookSecret) {
+		fields = append(fields, user.FieldWebhookSecret)
+	}
 	return fields
 }
 
@@ -2003,6 +2070,9 @@ func (m *UserMutation) ClearField(name string) error {
 	switch name {
 	case user.FieldWebhookURL:
 		m.ClearWebhookURL()
+		return nil
+	case user.FieldWebhookSecret:
+		m.ClearWebhookSecret()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -2032,6 +2102,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldWebhookURL:
 		m.ResetWebhookURL()
+		return nil
+	case user.FieldWebhookSecret:
+		m.ResetWebhookSecret()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

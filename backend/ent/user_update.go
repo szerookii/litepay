@@ -119,6 +119,26 @@ func (_u *UserUpdate) ClearWebhookURL() *UserUpdate {
 	return _u
 }
 
+// SetWebhookSecret sets the "webhook_secret" field.
+func (_u *UserUpdate) SetWebhookSecret(v string) *UserUpdate {
+	_u.mutation.SetWebhookSecret(v)
+	return _u
+}
+
+// SetNillableWebhookSecret sets the "webhook_secret" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableWebhookSecret(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetWebhookSecret(*v)
+	}
+	return _u
+}
+
+// ClearWebhookSecret clears the value of the "webhook_secret" field.
+func (_u *UserUpdate) ClearWebhookSecret() *UserUpdate {
+	_u.mutation.ClearWebhookSecret()
+	return _u
+}
+
 // AddPaymentIDs adds the "payments" edge to the Payment entity by IDs.
 func (_u *UserUpdate) AddPaymentIDs(ids ...uuid.UUID) *UserUpdate {
 	_u.mutation.AddPaymentIDs(ids...)
@@ -241,6 +261,12 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.WebhookURLCleared() {
 		_spec.ClearField(user.FieldWebhookURL, field.TypeString)
+	}
+	if value, ok := _u.mutation.WebhookSecret(); ok {
+		_spec.SetField(user.FieldWebhookSecret, field.TypeString, value)
+	}
+	if _u.mutation.WebhookSecretCleared() {
+		_spec.ClearField(user.FieldWebhookSecret, field.TypeString)
 	}
 	if _u.mutation.PaymentsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -396,6 +422,26 @@ func (_u *UserUpdateOne) ClearWebhookURL() *UserUpdateOne {
 	return _u
 }
 
+// SetWebhookSecret sets the "webhook_secret" field.
+func (_u *UserUpdateOne) SetWebhookSecret(v string) *UserUpdateOne {
+	_u.mutation.SetWebhookSecret(v)
+	return _u
+}
+
+// SetNillableWebhookSecret sets the "webhook_secret" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableWebhookSecret(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetWebhookSecret(*v)
+	}
+	return _u
+}
+
+// ClearWebhookSecret clears the value of the "webhook_secret" field.
+func (_u *UserUpdateOne) ClearWebhookSecret() *UserUpdateOne {
+	_u.mutation.ClearWebhookSecret()
+	return _u
+}
+
 // AddPaymentIDs adds the "payments" edge to the Payment entity by IDs.
 func (_u *UserUpdateOne) AddPaymentIDs(ids ...uuid.UUID) *UserUpdateOne {
 	_u.mutation.AddPaymentIDs(ids...)
@@ -548,6 +594,12 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.WebhookURLCleared() {
 		_spec.ClearField(user.FieldWebhookURL, field.TypeString)
+	}
+	if value, ok := _u.mutation.WebhookSecret(); ok {
+		_spec.SetField(user.FieldWebhookSecret, field.TypeString, value)
+	}
+	if _u.mutation.WebhookSecretCleared() {
+		_spec.ClearField(user.FieldWebhookSecret, field.TypeString)
 	}
 	if _u.mutation.PaymentsCleared() {
 		edge := &sqlgraph.EdgeSpec{

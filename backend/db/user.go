@@ -20,6 +20,15 @@ func GenerateAPIKey() (string, error) {
 	return hex.EncodeToString(b), nil
 }
 
+// GenerateWebhookSecret returns a cryptographically random 32-byte hex webhook signing secret.
+func GenerateWebhookSecret() (string, error) {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
+}
+
 func CreateUser(email, passwordHash, apiKey string) (*ent.User, error) {
 	ctx := context.Background()
 	tx, err := Client().Tx(ctx)
@@ -34,11 +43,18 @@ func CreateUser(email, passwordHash, apiKey string) (*ent.User, error) {
 		return nil, err
 	}
 
+	webhookSecret, err := GenerateWebhookSecret()
+	if err != nil {
+		_ = tx.Rollback()
+		return nil, err
+	}
+
 	u, err := tx.User.Create().
 		SetEmail(strings.ToLower(email)).
 		SetPasswordHash(passwordHash).
 		SetAPIKey(apiKey).
 		SetAccountIndex(count).
+		SetWebhookSecret(webhookSecret).
 		Save(ctx)
 	if err != nil {
 		_ = tx.Rollback()
@@ -72,6 +88,17 @@ func UpdateUserWebhook(id uuid.UUID, webhookURL *string) (*ent.User, error) {
 		q.SetWebhookURL(*webhookURL)
 	}
 	return q.Save(context.Background())
+}
+
+func RotateWebhookSecret(id uuid.UUID) (string, error) {
+	secret, err := GenerateWebhookSecret()
+	if err != nil {
+		return "", err
+	}
+	if _, err := Client().User.UpdateOneID(id).SetWebhookSecret(secret).Save(context.Background()); err != nil {
+		return "", err
+	}
+	return secret, nil
 }
 
 func RegenerateAPIKey(id uuid.UUID) (string, error) {

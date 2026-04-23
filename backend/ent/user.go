@@ -32,6 +32,8 @@ type User struct {
 	AccountIndex int `json:"account_index,omitempty"`
 	// WebhookURL holds the value of the "webhook_url" field.
 	WebhookURL *string `json:"webhook_url,omitempty"`
+	// WebhookSecret holds the value of the "webhook_secret" field.
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -63,7 +65,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldAccountIndex:
 			values[i] = new(sql.NullInt64)
-		case user.FieldEmail, user.FieldPasswordHash, user.FieldAPIKey, user.FieldWebhookURL:
+		case user.FieldEmail, user.FieldPasswordHash, user.FieldAPIKey, user.FieldWebhookURL, user.FieldWebhookSecret:
 			values[i] = new(sql.NullString)
 		case user.FieldCreateTime, user.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -133,6 +135,13 @@ func (_m *User) assignValues(columns []string, values []any) error {
 				_m.WebhookURL = new(string)
 				*_m.WebhookURL = value.String
 			}
+		case user.FieldWebhookSecret:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field webhook_secret", values[i])
+			} else if value.Valid {
+				_m.WebhookSecret = new(string)
+				*_m.WebhookSecret = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -194,6 +203,11 @@ func (_m *User) String() string {
 	builder.WriteString(", ")
 	if v := _m.WebhookURL; v != nil {
 		builder.WriteString("webhook_url=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.WebhookSecret; v != nil {
+		builder.WriteString("webhook_secret=")
 		builder.WriteString(*v)
 	}
 	builder.WriteByte(')')

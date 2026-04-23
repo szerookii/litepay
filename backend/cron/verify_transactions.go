@@ -8,6 +8,7 @@ import (
 	"github.com/szerookii/litepay/backend/cryptocurrency"
 	"github.com/szerookii/litepay/backend/db"
 	entpayment "github.com/szerookii/litepay/backend/ent/payment"
+	"github.com/szerookii/litepay/backend/webhook"
 )
 
 func StartTransactionVerifier(ctx context.Context, interval time.Duration) {
@@ -101,12 +102,20 @@ func verifyPendingPayments() {
 					Msg("Cron: Payment seen, waiting for confirmations...")
 			}
 
-			_, err = db.UpdatePaymentWithHash(p.ID, newStatus, status.TxHash, status.ReceivedAmount)
+			updated, err := db.UpdatePaymentWithHash(p.ID, newStatus, status.TxHash, status.ReceivedAmount)
 			if err != nil {
 				log.Error().Err(err).Str("id", p.ID.String()).Msg("Cron: Failed to update payment status")
+				continue
 			}
 
-			// TODO: Trigger Webhook here on PAID
+			user, err := db.UserByID(p.UserID)
+			if err != nil {
+				log.Error().Err(err).Str("id", p.ID.String()).Msg("Cron: Failed to load user for webhook")
+				continue
+			}
+			if user.WebhookURL != nil && *user.WebhookURL != "" && user.WebhookSecret != nil {
+				webhook.Dispatch(*user.WebhookURL, *user.WebhookSecret, updated)
+			}
 		} else {
 			log.Debug().
 				Str("id", p.ID.String()).

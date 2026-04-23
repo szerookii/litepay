@@ -23,15 +23,15 @@
 			.catch(() => {});
 	});
 
-	function logout() {
-		localStorage.removeItem('token');
+	async function logout() {
+		await fetch('/api/auth/logout', { method: 'POST' });
 		goto('/auth/login');
 	}
 
 	const nav = [
 		{ href: '/dashboard', label: m.dash_nav_dashboard(), icon: House },
 		{ href: '/dashboard/transactions', label: m.dash_nav_transactions(), icon: Receipt },
-		{ href: '/dashboard/cashout', label: 'Cashout', icon: ArrowUpRight },
+		{ href: '/dashboard/cashout', label: m.dash_nav_cashout(), icon: ArrowUpRight },
 		{ href: '/dashboard/wallets', label: m.dash_nav_wallets(), icon: Wallet },
 		{ href: '/dashboard/api-keys', label: m.dash_nav_api_keys(), icon: Key }
 	];
@@ -49,6 +49,7 @@
 	<!-- Sidebar (desktop) -->
 	<aside class="border-border hidden w-56 shrink-0 flex-col border-r lg:flex">
 		<div class="flex items-center gap-2 px-5 py-4">
+			<img src="/favicon.svg" alt="LitePay" class="size-4 shrink-0" />
 			<span class="text-sm font-medium tracking-tight text-foreground"
 				>lite<span class="text-muted-foreground">pay</span></span
 			>
@@ -93,9 +94,12 @@
 			class="border-border fixed inset-y-0 left-0 z-50 flex w-56 flex-col border-r bg-background lg:hidden"
 		>
 			<div class="flex items-center justify-between px-5 py-4">
-				<span class="text-sm font-medium text-foreground"
-					>lite<span class="text-muted-foreground">pay</span></span
-				>
+				<div class="flex items-center gap-2">
+					<img src="/favicon.svg" alt="LitePay" class="size-4 shrink-0" />
+					<span class="text-sm font-medium text-foreground"
+						>lite<span class="text-muted-foreground">pay</span></span
+					>
+				</div>
 				<button onclick={() => (mobileOpen = false)} class="text-muted-foreground hover:text-foreground">
 					<X size={16} />
 				</button>
