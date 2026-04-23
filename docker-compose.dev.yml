@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: litepay
+      POSTGRES_PASSWORD: litepay
+      POSTGRES_DB: litepay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  postgres_dev:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: litepay
+      POSTGRES_PASSWORD: litepay
+      POSTGRES_DB: litepay_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  postgres_dev_data:
