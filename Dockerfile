@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-# Install Atlas CLI
-RUN go install ariga.io/atlas/cmd/atlas@latest
+# Install Atlas CLI v1.2.0
+RUN go install ariga.io/atlas/cmd/atlas@v1.2.0
 COPY . .
 COPY --from=frontend-builder /app/build ./frontend/build
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o litepay .
