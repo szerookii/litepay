@@ -6,12 +6,12 @@ COPY frontend/ .
 RUN pnpm build
 
 FROM golang:1.25-bookworm AS backend-builder
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-# Install Atlas CLI v1.2.0
-RUN go install ariga.io/atlas/cmd/atlas@v1.2.0
+# Install Atlas CLI using official installer
+RUN curl -sSf https://atlasgo.sh | sh
 COPY . .
 COPY --from=frontend-builder /app/build ./frontend/build
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o litepay .
@@ -19,7 +19,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o litepay .
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y ca-certificates netcat-openbsd && rm -rf /var/lib/apt/lists/*
 COPY --from=backend-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=backend-builder /go/bin/atlas /usr/local/bin/atlas
+COPY --from=backend-builder /root/.atlas/bin/atlas /usr/local/bin/atlas
 COPY --from=backend-builder /app/atlas.hcl /atlas.hcl
 COPY --from=backend-builder /app/migrations /migrations
 COPY entrypoint.sh /entrypoint.sh
