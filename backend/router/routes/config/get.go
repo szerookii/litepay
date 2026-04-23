@@ -10,10 +10,14 @@ import (
 )
 
 type ConfigResponse struct {
-	AllowRegister bool `json:"allow_register"`
+	AllowRegister bool   `json:"allow_register"`
+	Version       string `json:"version"`
 }
 
 func Get(c *gin.Context) {
 	allowRegister := strings.ToLower(os.Getenv("ALLOW_REGISTER")) != "false"
-	utils.SendJSON(c, http.StatusOK, &ConfigResponse{AllowRegister: allowRegister})
+	utils.SendJSON(c, http.StatusOK, &ConfigResponse{
+		AllowRegister: allowRegister,
+		Version:       utils.Version,
+	})
 }
