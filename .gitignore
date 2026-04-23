@@ -24,3 +24,8 @@ go.work.sum
 # env file
 .env
 /.idea
+backend/cryptocurrency/.DS_Store
+.claude
+.gemini
+CLAUDE.md
+.mcp.json
