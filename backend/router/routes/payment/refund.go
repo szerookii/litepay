@@ -93,7 +93,6 @@ func Refund(c *gin.Context) {
 	}
 
 	if _, err := db.UpdatePaymentWithHash(p.ID, entpayment.StatusREFUNDED, txHash, balance); err != nil {
-		// Log but don't fail — tx already broadcast
 		c.JSON(http.StatusOK, gin.H{
 			"tx_hash":    txHash,
 			"to":         senderAddr,

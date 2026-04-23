@@ -28,7 +28,6 @@ func Login(c *gin.Context) {
 
 	user, err := db.UserByEmail(req.Email)
 	if err != nil {
-		// Constant-time response — don't leak whether email exists
 		_ = bcrypt.CompareHashAndPassword([]byte("$2a$12$placeholder.hash.to.prevent.timing.attack"), []byte(req.Password))
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "invalid credentials"})
 		return

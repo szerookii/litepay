@@ -91,9 +91,6 @@ func eventForStatus(s entpayment.Status) (Event, bool) {
 	}
 }
 
-// Dispatch sends a webhook for the given payment status.
-// webhookURL and webhookSecret come from the user record.
-// Fires-and-forgets with up to maxRetries attempts.
 func Dispatch(webhookURL, webhookSecret string, p *ent.Payment) {
 	event, ok := eventForStatus(p.Status)
 	if !ok {

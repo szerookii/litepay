@@ -64,7 +64,6 @@ func main() {
 
 	r := router.Init()
 
-	// Start background verifier (checks pending payments every 30s)
 	ctxVerifier, cancelVerifier := context.WithCancel(context.Background())
 	go cron.StartTransactionVerifier(ctxVerifier, 30*time.Second)
 

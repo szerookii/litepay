@@ -63,7 +63,6 @@ func Cashout(c *gin.Context) {
 		return
 	}
 
-	// Fetch all PAID payments for this user+coin
 	payments, err := db.Client().Payment.Query().
 		Where(
 			entpayment.UserID(uid),

@@ -45,19 +45,16 @@ func Init() *gin.Engine {
 	api.GET("/config", config.Get)
 	api.GET("/payment/:id", payment.Get)
 
-	// Auth — stricter rate limit
 	authGroup := api.Group("/auth")
 	authGroup.Use(middleware.AuthLimiter.Middleware())
 	authGroup.POST("/register", routeauth.Register)
 	authGroup.POST("/login", routeauth.Login)
 	authGroup.POST("/logout", routeauth.Logout)
 
-	// Merchant API — API key auth, user in context
 	protected := api.Group("")
 	protected.Use(middleware.APIKey)
 	protected.POST("/payment", payment.Post)
 
-	// Dashboard user API — JWT auth
 	userGroup := api.Group("/user")
 	userGroup.Use(middleware.JWT)
 	userGroup.GET("/me", routeuser.Me)
@@ -72,7 +69,6 @@ func Init() *gin.Engine {
 	paymentGroup.Use(middleware.JWT)
 	paymentGroup.POST("/:id/refund", payment.Refund)
 
-	// SPA fallback — serve frontend build (NoRoute avoids wildcard conflict with /api)
 	r.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/api") {
 			c.JSON(http.StatusNotFound, gin.H{"error": "route not found"})
@@ -84,7 +80,6 @@ func Init() *gin.Engine {
 			path = "index.html"
 		}
 
-		// Try to read the specific file
 		data, err := frontend.Assets.ReadFile("build/" + path)
 		if err == nil {
 			contentType := mime.TypeByExtension(path[strings.LastIndex(path, "."):])
@@ -95,7 +90,6 @@ func Init() *gin.Engine {
 			return
 		}
 
-		// Fallback to index.html for SPA routing
 		data, err = frontend.Assets.ReadFile("build/index.html")
 		if err != nil {
 			c.Status(http.StatusNotFound)

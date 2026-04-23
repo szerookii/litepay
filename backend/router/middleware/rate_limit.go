@@ -44,7 +44,6 @@ func (rl *RateLimiter) get(ip string) *rate.Limiter {
 	return entry.limiter
 }
 
-// cleanup removes stale entries every 5 minutes
 func (rl *RateLimiter) cleanup() {
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
@@ -69,8 +68,6 @@ func (rl *RateLimiter) Middleware() gin.HandlerFunc {
 	}
 }
 
-// GlobalLimiter: 100 req/min per IP
 var GlobalLimiter = NewRateLimiter(rate.Every(time.Minute/100), 20)
 
-// AuthLimiter: 10 req/min per IP — brute force protection
 var AuthLimiter = NewRateLimiter(rate.Every(time.Minute/10), 5)

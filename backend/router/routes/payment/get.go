@@ -13,19 +13,19 @@ import (
 )
 
 type GetPaymentResponse struct {
-	ID                   string            `json:"id"`
-	WalletAddress        string            `json:"wallet_address"`
-	SolReference         *string           `json:"sol_reference,omitempty"`
-	AmountCrypto         float64           `json:"amount_crypto"`
-	CurrencyCryptoName   string            `json:"currency_crypto_name"`
-	CurrencyCryptoSymbol string            `json:"currency_crypto_symbol"`
-	AmountFiat           float64           `json:"amount_fiat"`
-	CurrencyFiat         string            `json:"currency_fiat"`
-	Status               entpayment.Status `json:"status"`
-	ExpiresAt            time.Time         `json:"expires_at"`
-	LastTransactionHash  string            `json:"last_transaction_hash,omitempty"`
-	Confirmations        *int              `json:"confirmations"`
-	RequiredConfirmations int              `json:"required_confirmations"`
+	ID                    string            `json:"id"`
+	WalletAddress         string            `json:"wallet_address"`
+	SolReference          *string           `json:"sol_reference,omitempty"`
+	AmountCrypto          float64           `json:"amount_crypto"`
+	CurrencyCryptoName    string            `json:"currency_crypto_name"`
+	CurrencyCryptoSymbol  string            `json:"currency_crypto_symbol"`
+	AmountFiat            float64           `json:"amount_fiat"`
+	CurrencyFiat          string            `json:"currency_fiat"`
+	Status                entpayment.Status `json:"status"`
+	ExpiresAt             time.Time         `json:"expires_at"`
+	LastTransactionHash   string            `json:"last_transaction_hash,omitempty"`
+	Confirmations         *int              `json:"confirmations"`
+	RequiredConfirmations int               `json:"required_confirmations"`
 }
 
 func toResponse(p *ent.Payment, cryptoName, cryptoSymbol, txHash string, confs *int, reqConfs int) *GetPaymentResponse {
@@ -53,7 +53,6 @@ func Get(ctx *gin.Context) {
 		return
 	}
 
-	// Terminal states — skip on-chain check
 	if p.Status == entpayment.StatusPAID || p.Status == entpayment.StatusEXPIRED {
 		utils.SendJSON(ctx, http.StatusOK, toResponse(p, p.CurrencyCrypto, p.CurrencyCrypto, "", nil, 0))
 		return
@@ -78,8 +77,8 @@ func Get(ctx *gin.Context) {
 	}
 
 	addr := &cryptocurrency.PaymentAddress{
-		Address:   p.WalletAddress,
-		Index:     uint32(p.AddressIndex),
+		Address: p.WalletAddress,
+		Index:   uint32(p.AddressIndex),
 	}
 	if p.SolReference != nil {
 		addr.Reference = *p.SolReference
