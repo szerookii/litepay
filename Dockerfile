@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y ca-certificates netcat-openbsd && rm -r
 RUN mkdir -p /go /home/nonroot && chown -R 65534:65534 /go /home/nonroot
 COPY --from=backend-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=backend-builder /usr/local/bin/atlas /usr/local/bin/atlas
+COPY --from=backend-builder /app/litepay /litepay
 COPY --from=backend-builder /app/atlas.hcl /atlas.hcl
 COPY --from=backend-builder /app/migrations /migrations
 COPY entrypoint.sh /entrypoint.sh
