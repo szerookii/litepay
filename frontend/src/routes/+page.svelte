@@ -1,39 +1,49 @@
 <script lang="ts">
 	import { Motion } from 'svelte-motion';
+	import { page } from '$app/state';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
+	import * as m from '$lib/paraglide/messages.js';
+	import { locales, getLocale, localizeHref, setLocale } from '$lib/paraglide/runtime.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import { TranslateIcon } from 'phosphor-svelte';
+	import SEO from '$lib/components/seo.svelte';
 
 	let allowRegister = $state<boolean>(true);
+	let version = $state<string>('v0.1');
 
 	$effect(() => {
 		fetch('/api/config')
 			.then((r) => r.json())
-			.then((d) => { allowRegister = d.allow_register ?? true; })
+			.then((d) => {
+				allowRegister = d.allow_register ?? true;
+				version = d.version ? `v${d.version}` : 'v0.1';
+			})
 			.catch(() => {});
 	});
 
 	const features = [
 		{
 			icon: '⬡',
-			title: 'Self-Hosted',
-			desc: 'Run on your own infrastructure. Your keys, your coins, your rules. No third-party holds your funds.',
+			title: m.landing_feature_1_title(),
+			desc: m.landing_feature_1_desc(),
 		},
 		{
 			icon: '#',
-			title: 'Open Source',
-			desc: 'Full source code on GitHub. Inspect every line, fork it, extend it. No black boxes.',
+			title: m.landing_feature_2_title(),
+			desc: m.landing_feature_2_desc(),
 		},
 		{
 			icon: '⚡',
-			title: 'API-First',
-			desc: 'Simple JSON API. Create a payment in one HTTP request. Integrate with any stack in minutes.',
+			title: m.landing_feature_3_title(),
+			desc: m.landing_feature_3_desc(),
 		},
 		{
 			icon: '↻',
-			title: 'Auto-Verify',
-			desc: 'Background cron checks on-chain confirmations automatically. No webhooks to configure manually.',
+			title: m.landing_feature_4_title(),
+			desc: m.landing_feature_4_desc(),
 		},
 	];
 
@@ -44,7 +54,7 @@
 			color: 'text-[#F7931A]',
 			border: 'border-[#F7931A]/20',
 			bg: 'bg-[#F7931A]/5',
-			desc: 'Non-custodial HD wallet. Unique address per payment via xpub derivation.',
+			desc: m.landing_coin_btc_desc(),
 		},
 		{
 			symbol: 'LTC',
@@ -52,7 +62,7 @@
 			color: 'text-[#BEBEBE]',
 			border: 'border-[#BEBEBE]/20',
 			bg: 'bg-[#BEBEBE]/5',
-			desc: 'Fast, low-fee payments. Battle-tested since 2011. BIP84 xpub support.',
+			desc: m.landing_coin_ltc_desc(),
 		},
 		{
 			symbol: 'SOL',
@@ -60,14 +70,14 @@
 			color: 'text-[#9945FF]',
 			border: 'border-[#9945FF]/20',
 			bg: 'bg-[#9945FF]/5',
-			desc: 'Solana Pay protocol. Unique reference key per payment, no xpub needed.',
+			desc: m.landing_coin_sol_desc(),
 		},
 	];
 
 	const steps = [
-		{ n: '01', title: 'Deploy', desc: 'Clone, add your xpub/wallet address in the dashboard, run the binary.' },
-		{ n: '02', title: 'Create Payment', desc: 'POST /api/payment with symbol, amount, currency. Get a deposit address back.' },
-		{ n: '03', title: 'Get Paid', desc: 'LitePay polls the chain. Status updates from pending → confirmed automatically.' },
+		{ n: '01', title: m.landing_step_1_title(), desc: m.landing_step_1_desc() },
+		{ n: '02', title: m.landing_step_2_title(), desc: m.landing_step_2_desc() },
+		{ n: '03', title: m.landing_step_3_title(), desc: m.landing_step_3_desc() },
 	];
 
 	const apiExample = `POST /payments
@@ -101,20 +111,65 @@ X-Api-Key: YOUR_API_KEY
 	}
 </script>
 
+<SEO
+	config={{
+		title: m.seo_home_title(),
+		description: m.seo_home_desc(),
+		keywords: m.seo_home_keywords(),
+		ogType: 'website'
+	}}
+	url={page.url.pathname}
+	locale={getLocale()}
+/>
+
 <!-- NAV -->
 <nav class="border-border/50 sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
 	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
 		<div class="flex items-center gap-2">
 			<span class="text-sm font-medium tracking-tight text-foreground">lite<span class="text-muted-foreground">pay</span></span>
-			<Badge variant="outline">v0.1</Badge>
+			<Badge variant="outline">{version}</Badge>
 		</div>
 		<div class="flex items-center gap-2">
-			<Button variant="ghost" size="sm" href="https://github.com/szerookii/litepay">GitHub</Button>
-			<Button variant="ghost" size="sm" href="#api">Docs</Button>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					{#snippet child({ props })}
+						<Button variant="ghost" size="sm" {...props} class="gap-2">
+							<TranslateIcon size={16} />
+							<span class="uppercase">{getLocale()}</span>
+						</Button>
+					{/snippet}
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					{#each locales as locale}
+						<DropdownMenu.Item>
+							<a
+								href="#"
+								onclick={(e) => {
+									e.preventDefault();
+									setLocale(locale);
+								}}
+								class="flex w-full items-center justify-between gap-2"
+							>
+								<span class="capitalize">
+									{locale === 'en' ? 'English' : locale === 'fr' ? 'Français' : locale}
+								</span>
+								{#if locale === getLocale()}
+									<div class="size-1.5 rounded-full bg-primary"></div>
+								{/if}
+							</a>
+						</DropdownMenu.Item>
+					{/each}
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+
+			<Separator orientation="vertical" class="mx-1 h-4" />
+
+			<Button variant="ghost" size="sm" href="https://github.com/szerookii/litepay">{m.landing_nav_github()}</Button>
+			<Button variant="ghost" size="sm" href="#api">{m.landing_nav_docs()}</Button>
 			{#if allowRegister}
-				<Button variant="ghost" size="sm" href="/auth/register">Register</Button>
+				<Button variant="ghost" size="sm" href="/auth/register">{m.landing_nav_register()}</Button>
 			{/if}
-			<Button variant="outline" size="sm" href="/auth/login">Login</Button>
+			<Button variant="outline" size="sm" href="/auth/login">{m.landing_nav_login()}</Button>
 		</div>
 	</div>
 </nav>
@@ -130,32 +185,29 @@ X-Api-Key: YOUR_API_KEY
 			<div class="space-y-6">
 				<Motion {...fade(0)} let:motion>
 					<div use:motion>
-						<Badge variant="secondary" class="mb-2">Open Source · Self-Hosted · MIT</Badge>
+						<Badge variant="secondary" class="mb-2">{m.landing_hero_badge()}</Badge>
 					</div>
 				</Motion>
 
 				<Motion {...fade(0.1)} let:motion>
 					<h1 use:motion class="text-4xl font-medium leading-tight tracking-tight text-foreground lg:text-5xl">
-						Accept crypto payments.<br />
-						<span class="text-muted-foreground">No middlemen.</span>
+						{@html m.landing_hero_title()}
 					</h1>
 				</Motion>
 
 				<Motion {...fade(0.2)} let:motion>
 					<p use:motion class="text-sm leading-relaxed text-muted-foreground">
-						LitePay is an open-source crypto payment processor you run on your own server.
-						One API call to create a payment, on-chain verification handled automatically.
-						BTC, LTC, and SOL out of the box.
+						{m.landing_hero_subtitle()}
 					</p>
 				</Motion>
 
 				<Motion {...fade(0.3)} let:motion>
 					<div use:motion class="flex flex-wrap gap-2">
 						<Button href="https://github.com/szerookii/litepay" size="lg">
-							View on GitHub
+							{m.landing_hero_cta_github()}
 						</Button>
 						<Button variant="outline" href="#how-it-works" size="lg">
-							How it works
+							{m.landing_hero_cta_how()}
 						</Button>
 					</div>
 				</Motion>
@@ -170,7 +222,7 @@ X-Api-Key: YOUR_API_KEY
 						<span class="size-2.5 rounded-full bg-green-400/60"></span>
 						<span class="ml-2 text-xs text-muted-foreground">litepay — api</span>
 					</div>
-					<pre class="overflow-x-auto bg-card p-5 text-xs leading-relaxed"><code><span class="text-muted-foreground"># create a payment</span>
+					<pre class="overflow-x-auto bg-card p-5 text-xs leading-relaxed"><code><span class="text-muted-foreground">{m.landing_hero_terminal_comment()}</span>
 <span class="text-green-400">$</span> curl -X POST https://pay.example.com/payments \
     -H <span class="text-yellow-400">"X-Api-Key: sk_live_..."</span> \
     -d <span class="text-yellow-400">'&#123;"symbol":"LTC","amount":49.99,"currency":"USD"&#125;'</span>
@@ -195,8 +247,8 @@ X-Api-Key: YOUR_API_KEY
 	<div class="mx-auto max-w-6xl">
 		<Motion {...fade(0)} let:motion>
 			<div use:motion class="mb-12 space-y-2">
-				<p class="text-xs uppercase tracking-widest text-muted-foreground">Why LitePay</p>
-				<h2 class="text-2xl font-medium text-foreground">Built for developers who own their stack.</h2>
+				<p class="text-xs uppercase tracking-widest text-muted-foreground">{m.landing_features_label()}</p>
+				<h2 class="text-2xl font-medium text-foreground">{m.landing_features_title()}</h2>
 			</div>
 		</Motion>
 
@@ -225,8 +277,8 @@ X-Api-Key: YOUR_API_KEY
 	<div class="mx-auto max-w-6xl">
 		<Motion {...fade(0)} let:motion>
 			<div use:motion class="mb-12 space-y-2">
-				<p class="text-xs uppercase tracking-widest text-muted-foreground">Supported coins</p>
-				<h2 class="text-2xl font-medium text-foreground">Three chains, one API. Non-custodial.</h2>
+				<p class="text-xs uppercase tracking-widest text-muted-foreground">{m.landing_coins_label()}</p>
+				<h2 class="text-2xl font-medium text-foreground">{m.landing_coins_title()}</h2>
 			</div>
 		</Motion>
 
@@ -253,8 +305,8 @@ X-Api-Key: YOUR_API_KEY
 	<div class="mx-auto max-w-6xl">
 		<Motion {...fade(0)} let:motion>
 			<div use:motion class="mb-12 space-y-2">
-				<p class="text-xs uppercase tracking-widest text-muted-foreground">Integration</p>
-				<h2 class="text-2xl font-medium text-foreground">Up and running in minutes.</h2>
+				<p class="text-xs uppercase tracking-widest text-muted-foreground">{m.landing_steps_label()}</p>
+				<h2 class="text-2xl font-medium text-foreground">{m.landing_steps_title()}</h2>
 			</div>
 		</Motion>
 
@@ -279,8 +331,8 @@ X-Api-Key: YOUR_API_KEY
 	<div class="mx-auto max-w-6xl">
 		<Motion {...fade(0)} let:motion>
 			<div use:motion class="mb-12 space-y-2">
-				<p class="text-xs uppercase tracking-widest text-muted-foreground">API</p>
-				<h2 class="text-2xl font-medium text-foreground">One endpoint. That's it.</h2>
+				<p class="text-xs uppercase tracking-widest text-muted-foreground">{m.landing_api_label()}</p>
+				<h2 class="text-2xl font-medium text-foreground">{m.landing_api_title()}</h2>
 			</div>
 		</Motion>
 
@@ -306,21 +358,21 @@ X-Api-Key: YOUR_API_KEY
 	<div class="mx-auto max-w-xl space-y-6">
 		<Motion {...fade(0)} let:motion>
 			<h2 use:motion class="text-3xl font-medium text-foreground">
-				Own your payment stack.
+				{m.landing_cta_title()}
 			</h2>
 		</Motion>
 		<Motion {...fade(0.1)} let:motion>
 			<p use:motion class="text-sm text-muted-foreground">
-				No fees. No vendor lock-in. No KYC. Deploy LitePay and start accepting crypto payments today.
+				{m.landing_cta_desc()}
 			</p>
 		</Motion>
 		<Motion {...fade(0.2)} let:motion>
 			<div use:motion class="flex justify-center gap-2">
 				<Button href="https://github.com/szerookii/litepay" size="lg">
-					Get Started →
+					{m.landing_cta_start()}
 				</Button>
 				<Button variant="outline" size="lg" href="https://github.com/szerookii/litepay">
-					Star on GitHub
+					{m.landing_cta_star()}
 				</Button>
 			</div>
 		</Motion>
@@ -330,9 +382,9 @@ X-Api-Key: YOUR_API_KEY
 <!-- FOOTER -->
 <footer class="border-border border-t px-6 py-8">
 	<div class="mx-auto flex max-w-6xl items-center justify-between">
-		<span class="text-xs text-muted-foreground">litepay · MIT License</span>
+		<span class="text-xs text-muted-foreground">{m.landing_footer_license()}</span>
 		<div class="flex items-center gap-4">
-			<a href="https://github.com/szerookii/litepay" class="text-xs text-muted-foreground hover:text-foreground transition-colors">GitHub</a>
+			<a href="https://github.com/szerookii/litepay" class="text-xs text-muted-foreground hover:text-foreground transition-colors">{m.landing_nav_github()}</a>
 		</div>
 	</div>
 </footer>

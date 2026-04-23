@@ -11,6 +11,8 @@
 	} from 'phosphor-svelte';
 	import { qr } from '@svelte-put/qr/svg';
 	import { m } from '$lib/paraglide/messages.js';
+	import SEO from '$lib/components/seo.svelte';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 
 	type Status = 'PENDING' | 'CONFIRMING' | 'PAID' | 'EXPIRED';
 
@@ -48,7 +50,7 @@
 	const expiresAt = $derived(payment ? new Date(payment.expires_at) : new Date());
 	const paidAt = $state<Date | null>(null);
 
-	// For Solana Pay, the QR encodes solana:<address>?amount=<sol>&reference=<ref>
+	// For Solana, the QR encodes solana:<address>?amount=<sol>&reference=<ref>
 	const qrData = $derived(() => {
 		if (!payment) return '';
 		const sym = payment.currency_crypto_symbol;
@@ -118,6 +120,16 @@
 		return () => clearInterval(interval);
 	});
 </script>
+
+<SEO
+	config={{
+		title: m.seo_pay_title(),
+		description: m.seo_pay_desc(),
+		ogType: 'website'
+	}}
+	url={page.url.pathname}
+	locale={getLocale()}
+/>
 
 <!-- ambient glow -->
 <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">

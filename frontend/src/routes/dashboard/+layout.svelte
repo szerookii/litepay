@@ -5,10 +5,23 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { House, Wallet, Key, SignOut, List, X, Receipt, ArrowUpRight } from 'phosphor-svelte';
 	import * as m from '$lib/paraglide/messages.js';
+	import SEO from '$lib/components/seo.svelte';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+	import { getSEOConfig } from '$lib/seo/config.js';
 
 	let { children } = $props();
 
 	let mobileOpen = $state(false);
+	let version = $state('v0.1');
+
+	$effect(() => {
+		fetch('/api/config')
+			.then((r) => r.json())
+			.then((d) => {
+				version = d.version ? `v${d.version}` : 'v0.1';
+			})
+			.catch(() => {});
+	});
 
 	function logout() {
 		localStorage.removeItem('token');
@@ -26,6 +39,12 @@
 	const currentPath = $derived(page.url.pathname);
 </script>
 
+<SEO
+	config={getSEOConfig(currentPath)}
+	url={page.url.pathname}
+	locale={getLocale()}
+/>
+
 <div class="flex min-h-svh bg-background">
 	<!-- Sidebar (desktop) -->
 	<aside class="border-border hidden w-56 shrink-0 flex-col border-r lg:flex">
@@ -33,7 +52,7 @@
 			<span class="text-sm font-medium tracking-tight text-foreground"
 				>lite<span class="text-muted-foreground">pay</span></span
 			>
-			<Badge variant="outline" class="text-[10px]">v0.1</Badge>
+			<Badge variant="outline" class="text-[10px]">{version}</Badge>
 		</div>
 		<Separator />
 		<nav class="flex flex-1 flex-col gap-0.5 p-3">

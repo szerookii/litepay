@@ -30,7 +30,54 @@
 	"pay_amount": "Amount",
 	"pay_expired_at_label": "Expired at",
 	"pay_create_new_payment": "Create new payment",
-	"pay_trust_line": "Peer-to-peer · Non-custodial · Powered by LitePay",
+	"pay_trust_line": "Peer-to-peer · Secure · Powered by LitePay",
+
+	"landing_nav_github": "GitHub",
+	"landing_nav_docs": "Docs",
+	"landing_nav_register": "Register",
+	"landing_nav_login": "Login",
+
+	"landing_hero_badge": "Open Source · Self-Hosted · MIT",
+	"landing_hero_title": "Accept crypto payments.<br />No middlemen.",
+	"landing_hero_subtitle": "LitePay is an open-source crypto payment processor you run on your own server. One API call to create a payment, on-chain verification handled automatically. BTC, LTC, and SOL out of the box.",
+	"landing_hero_cta_github": "View on GitHub",
+	"landing_hero_cta_how": "How it works",
+	"landing_hero_terminal_comment": "# create a payment",
+
+	"landing_features_label": "Why LitePay",
+	"landing_features_title": "Built for developers who own their stack.",
+	"landing_feature_1_title": "Self-Hosted",
+	"landing_feature_1_desc": "Run on your own infrastructure. Wallets are generated automatically. No third-party holds your funds.",
+	"landing_feature_2_title": "Open Source",
+	"landing_feature_2_desc": "Full source code on GitHub. Inspect every line, fork it, extend it. No black boxes.",
+	"landing_feature_3_title": "API-First",
+	"landing_feature_3_desc": "Simple JSON API. Create a payment in one HTTP request. Integrate with any stack in minutes.",
+	"landing_feature_4_title": "Auto-Verify",
+	"landing_feature_4_desc": "Background cron checks on-chain confirmations automatically. No webhooks to configure manually.",
+
+	"landing_coins_label": "Supported coins",
+	"landing_coins_title": "Three chains, one API. Fully automated.",
+	"landing_coin_btc_desc": "Unique address per payment generated automatically from the server master seed.",
+	"landing_coin_ltc_desc": "Fast, low-fee payments. Battle-tested since 2011. Addresses generated automatically.",
+	"landing_coin_sol_desc": "Fast, high-throughput payments. Unique reference key per payment generated automatically.",
+
+	"landing_steps_label": "Integration",
+	"landing_steps_title": "Up and running in minutes.",
+	"landing_step_1_title": "Deploy",
+	"landing_step_1_desc": "Clone and run the binary. Wallets are generated automatically when you create your account.",
+	"landing_step_2_title": "Create Payment",
+	"landing_step_2_desc": "POST /api/payment with symbol, amount, currency. Get a deposit address back.",
+	"landing_step_3_title": "Get Paid",
+	"landing_step_3_desc": "LitePay polls the chain. Status updates from pending → confirmed automatically.",
+
+	"landing_api_label": "API",
+	"landing_api_title": "One endpoint. That's it.",
+
+	"landing_cta_title": "Own your payment stack.",
+	"landing_cta_desc": "No fees. No vendor lock-in. No KYC. Deploy LitePay and start accepting crypto payments today.",
+	"landing_cta_start": "Get Started →",
+	"landing_cta_star": "Star on GitHub",
+	"landing_footer_license": "litepay · MIT License",
 
 	"dash_nav_dashboard": "Dashboard",
 	"dash_nav_transactions": "Transactions",
@@ -109,5 +156,33 @@
 	"auth_register_have_account": "Already have an account?",
 	"auth_register_login_link": "Log in",
 	"auth_register_error": "Registration failed. Please try again.",
-	"auth_register_password_hint": "Min. 8 characters"
+	"auth_register_password_hint": "Min. 8 characters",
+
+	"seo_home_title": "LitePay - Accept Crypto Payments | No Middlemen",
+	"seo_home_desc": "LitePay is an open-source crypto payment processor. Accept BTC, LTC, SOL on your own server. Self-hosted, API-first, fully automated.",
+	"seo_home_keywords": "crypto payments, bitcoin, litecoin, solana, payment processor, open source",
+
+	"seo_login_title": "Login - LitePay Merchant Dashboard",
+	"seo_login_desc": "Sign in to your LitePay merchant dashboard to manage payments and wallets.",
+
+	"seo_register_title": "Create Account - LitePay",
+	"seo_register_desc": "Start accepting crypto payments with LitePay. Create your merchant account in minutes.",
+
+	"seo_dashboard_title": "Dashboard - LitePay",
+	"seo_dashboard_desc": "Your LitePay merchant dashboard. View account overview and quick links.",
+
+	"seo_transactions_title": "Transactions - LitePay Dashboard",
+	"seo_transactions_desc": "View and manage your crypto payment transactions.",
+
+	"seo_wallets_title": "Wallets - LitePay Dashboard",
+	"seo_wallets_desc": "Manage your wallets and webhook configuration.",
+
+	"seo_api_keys_title": "API Keys - LitePay Dashboard",
+	"seo_api_keys_desc": "Manage your LitePay API credentials.",
+
+	"seo_cashout_title": "Cashout - LitePay Dashboard",
+	"seo_cashout_desc": "Withdraw your funds to external wallets.",
+
+	"seo_pay_title": "Payment - LitePay",
+	"seo_pay_desc": "Complete your payment securely with LitePay."
 }

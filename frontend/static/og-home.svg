@@ -1,0 +1,46 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d1f1f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0a0f;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Accent glow (subtle) -->
+  <circle cx="1100" cy="100" r="220" fill="#d4a574" opacity="0.06" filter="url(#glow)"/>
+  <circle cx="50" cy="550" r="180" fill="#d4a574" opacity="0.04" filter="url(#glow)"/>
+  
+  <!-- Brand text -->
+  <text x="60" y="110" font-family="JetBrains Mono, monospace" font-size="52" font-weight="bold" fill="#cfd5cf">
+    litepay
+  </text>
+  
+  <!-- Main headline -->
+  <text x="60" y="240" font-family="JetBrains Mono, monospace" font-size="68" font-weight="bold" fill="#d4a574" letter-spacing="2">
+    Accept
+  </text>
+  <text x="60" y="320" font-family="JetBrains Mono, monospace" font-size="68" font-weight="bold" fill="#d4a574" letter-spacing="2">
+    Crypto
+  </text>
+  <text x="60" y="400" font-family="JetBrains Mono, monospace" font-size="68" font-weight="bold" fill="#cfd5cf" letter-spacing="2">
+    Payments
+  </text>
+  
+  <!-- Subtext -->
+  <text x="60" y="475" font-family="JetBrains Mono, monospace" font-size="20" fill="#6b7372" letter-spacing="1">
+    No middlemen • Self-hosted • Open source
+  </text>
+  
+  <!-- Accent line -->
+  <line x1="60" y1="510" x2="280" y2="510" stroke="#d4a574" stroke-width="3"/>
+</svg>

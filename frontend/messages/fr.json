@@ -30,7 +30,54 @@
 	"pay_amount": "Montant",
 	"pay_expired_at_label": "Expiré à",
 	"pay_create_new_payment": "Créer un nouveau paiement",
-	"pay_trust_line": "Pair-à-pair · Non-custodial · Propulsé par LitePay",
+	"pay_trust_line": "Pair-à-pair · Sécurisé · Propulsé par LitePay",
+
+	"landing_nav_github": "GitHub",
+	"landing_nav_docs": "Docs",
+	"landing_nav_register": "Inscription",
+	"landing_nav_login": "Connexion",
+
+	"landing_hero_badge": "Open Source · Auto-Hébergé · MIT",
+	"landing_hero_title": "Acceptez les paiements crypto.<br />Sans intermédiaire.",
+	"landing_hero_subtitle": "LitePay est un processeur de paiement crypto open-source à exécuter sur votre propre serveur. Un appel API pour créer un paiement, vérification on-chain automatique. BTC, LTC et SOL supportés nativement.",
+	"landing_hero_cta_github": "Voir sur GitHub",
+	"landing_hero_cta_how": "Comment ça marche",
+	"landing_hero_terminal_comment": "# créer un paiement",
+
+	"landing_features_label": "Pourquoi LitePay",
+	"landing_features_title": "Conçu pour les développeurs qui maîtrisent leur stack.",
+	"landing_feature_1_title": "Auto-Hébergé",
+	"landing_feature_1_desc": "Exécutez sur votre propre infrastructure. Les portefeuilles sont générés automatiquement. Aucun tiers ne détient vos fonds.",
+	"landing_feature_2_title": "Open Source",
+	"landing_feature_2_desc": "Code source complet sur GitHub. Inspectez chaque ligne, forkez-le, étendez-le. Pas de boîte noire.",
+	"landing_feature_3_title": "API-First",
+	"landing_feature_3_desc": "API JSON simple. Créez un paiement en une requête HTTP. Intégrez-le à n'importe quelle stack en quelques minutes.",
+	"landing_feature_4_title": "Auto-Vérification",
+	"landing_feature_4_desc": "Un cron en arrière-plan vérifie automatiquement les confirmations on-chain. Pas de webhooks à configurer manuellement.",
+
+	"landing_coins_label": "Coins supportés",
+	"landing_coins_title": "Trois chaînes, une API. Entièrement automatisé.",
+	"landing_coin_btc_desc": "Adresse unique par paiement générée automatiquement à partir de la seed maître du serveur.",
+	"landing_coin_ltc_desc": "Paiements rapides à frais réduits. Éprouvé depuis 2011. Adresses générées automatiquement.",
+	"landing_coin_sol_desc": "Paiements rapides et haut débit. Clé de référence unique par paiement générée automatiquement.",
+
+	"landing_steps_label": "Intégration",
+	"landing_steps_title": "Opérationnel en quelques minutes.",
+	"landing_step_1_title": "Déploiement",
+	"landing_step_1_desc": "Clonez et lancez le binaire. Les portefeuilles sont générés automatiquement lors de la création de votre compte.",
+	"landing_step_2_title": "Créer un paiement",
+	"landing_step_2_desc": "POST /api/payment avec symbole, montant, devise. Recevez une adresse de dépôt instantanément.",
+	"landing_step_3_title": "Soyez payé",
+	"landing_step_3_desc": "LitePay surveille la chaîne. Le statut passe de en attente à confirmé automatiquement.",
+
+	"landing_api_label": "API",
+	"landing_api_title": "Un seul endpoint. C'est tout.",
+
+	"landing_cta_title": "Maîtrisez votre stack de paiement.",
+	"landing_cta_desc": "Pas de frais. Pas de dépendance fournisseur. Pas de KYC. Déployez LitePay et commencez à accepter les cryptos dès aujourd'hui.",
+	"landing_cta_start": "Commencer →",
+	"landing_cta_star": "Star sur GitHub",
+	"landing_footer_license": "litepay · Licence MIT",
 
 	"dash_nav_dashboard": "Tableau de bord",
 	"dash_nav_transactions": "Transactions",
@@ -109,5 +156,33 @@
 	"auth_register_have_account": "Déjà un compte ?",
 	"auth_register_login_link": "Se connecter",
 	"auth_register_error": "L'inscription a échoué. Veuillez réessayer.",
-	"auth_register_password_hint": "Min. 8 caractères"
+	"auth_register_password_hint": "Min. 8 caractères",
+
+	"seo_home_title": "LitePay - Acceptez les Paiements Crypto | Sans Intermédiaire",
+	"seo_home_desc": "LitePay est un processeur de paiement crypto open-source. Acceptez BTC, LTC, SOL sur votre propre serveur. Auto-hébergé, API-first, entièrement automatisé.",
+	"seo_home_keywords": "paiements crypto, bitcoin, litecoin, solana, processeur de paiement, open source",
+
+	"seo_login_title": "Connexion - Tableau de Bord LitePay",
+	"seo_login_desc": "Connectez-vous à votre tableau de bord marchand LitePay pour gérer vos paiements et portefeuilles.",
+
+	"seo_register_title": "Créer un Compte - LitePay",
+	"seo_register_desc": "Commencez à accepter les paiements crypto avec LitePay. Créez votre compte marchand en quelques minutes.",
+
+	"seo_dashboard_title": "Tableau de Bord - LitePay",
+	"seo_dashboard_desc": "Votre tableau de bord marchand LitePay. Consultez l'aperçu du compte et les liens rapides.",
+
+	"seo_transactions_title": "Transactions - Tableau de Bord LitePay",
+	"seo_transactions_desc": "Consultez et gérez vos transactions de paiement en crypto.",
+
+	"seo_wallets_title": "Portefeuilles - Tableau de Bord LitePay",
+	"seo_wallets_desc": "Gérez vos portefeuilles et la configuration du webhook.",
+
+	"seo_api_keys_title": "Clés API - Tableau de Bord LitePay",
+	"seo_api_keys_desc": "Gérez vos identifiants API LitePay.",
+
+	"seo_cashout_title": "Retrait - Tableau de Bord LitePay",
+	"seo_cashout_desc": "Retirez vos fonds vers des portefeuilles externes.",
+
+	"seo_pay_title": "Paiement - LitePay",
+	"seo_pay_desc": "Complétez votre paiement de manière sécurisée avec LitePay."
 }

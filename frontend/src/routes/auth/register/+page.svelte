@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as m from '$lib/paraglide/messages.js';
+	import SEO from '$lib/components/seo.svelte';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 
 	interface ConfigResponse {
 		allow_register: boolean;
@@ -15,13 +18,15 @@
 	let error = $state('');
 	let loading = $state(false);
 	let allowRegister = $state<boolean | null>(null);
+	let version = $state('v0.1');
 
 	async function loadConfig(): Promise<void> {
 		try {
 			const res = await fetch('/api/config');
 			if (res.ok) {
-				const data: ConfigResponse = await res.json();
+				const data: ConfigResponse & { version?: string } = await res.json();
 				allowRegister = data.allow_register;
+				version = data.version ? `v${data.version}` : 'v0.1';
 			} else {
 				allowRegister = false;
 			}
@@ -59,9 +64,19 @@
 			error = 'Network error';
 		} finally {
 			loading = false;
-		}
 	}
+}
 </script>
+
+<SEO
+	config={{
+		title: m.seo_register_title(),
+		description: m.seo_register_desc(),
+		ogType: 'website'
+	}}
+	url={page.url.pathname}
+	locale={getLocale()}
+/>
 
 <div class="flex min-h-screen items-center justify-center px-6">
 	<div class="w-full max-w-sm space-y-8">
@@ -70,7 +85,7 @@
 				<span class="text-sm font-medium tracking-tight text-foreground"
 					>lite<span class="text-muted-foreground">pay</span></span
 				>
-				<Badge variant="outline">v0.1</Badge>
+				<Badge variant="outline">{version}</Badge>
 			</div>
 			<h1 class="text-2xl font-medium text-foreground">{m.auth_register_title()}</h1>
 			<p class="text-sm text-muted-foreground">{m.auth_register_subtitle()}</p>
